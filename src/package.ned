@@ -21,6 +21,13 @@ simple BaseGenerator
         output out[];
 }
 
+simple Poisson extends BaseGenerator{
+    
+    parameters:
+        @class(Poisson);
+        double lambda=default(10.0);
+}
+
 network laborki1
 {
     types:
@@ -32,6 +39,10 @@ network laborki1
             parameters:
                 @display("i=,gold");
         }
+        poisson1: Poisson{
+            
+        }
     connections:
+      poisson1.out++ --> Channel --> omNomNom1.in;
 
 }

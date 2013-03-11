@@ -77,5 +77,5 @@ void BaseGenerator::sendPacket(Packet *packet){
 }
 
 simtime_t BaseGenerator::getTimeChange(){
-    return 1.0;
+    return 5.0;
 }
