@@ -14,7 +14,6 @@
 // 
 
 #include "BaseGenerator.h"
-#include <math.h>
 #define FIRSTMESSAGETIME 0.0
 
 BaseGenerator::BaseGenerator() {
@@ -32,7 +31,7 @@ void BaseGenerator::initialize() {
     newMessageEvent = new cMessage("newMessageEvent");
     lastGeneratedId = 0;
 
-    timeChange = FIRSTMESSAGETIME;
+    timeChange = getTimeChange();
     scheduleAt(simTime() + timeChange, newMessageEvent);
 }
 
@@ -60,6 +59,8 @@ Packet *BaseGenerator::generatePacket(){
     packet->setSrc(src);
     packet->setDst(dest);
     packet->setPacketId(id);
+    packet->setPriorityClass(int(par("packetPriority")));
+    packet->setPayloadArraySize(int(par("packetLength")));
 
     return packet;
 }
@@ -69,8 +70,4 @@ void BaseGenerator::sendPacket(Packet *packet){
     int k = intuniform(0, n-1);
 
     send(packet, "out", k);
-}
-
-void BaseGenerator::initialize() {
-    lastGeneratedId = 0;
 }

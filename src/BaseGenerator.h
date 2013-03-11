@@ -37,4 +37,6 @@ public:
     virtual simtime_t getTimeChange(); //przeciazana funkcja podajaca odstep czasu do nastepnej wiadomosci
 };
 
+Define_Module(BaseGenerator);
+
 #endif /* BASEGENERATOR_H_ */
