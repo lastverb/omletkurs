@@ -31,7 +31,7 @@ simtime_t Poisson::getTimeChange(){
     double p=1;
 
     do{
-        double u=intuniform(0,1000)/1000.0;
+        double u=intuniform(0,INT_MAX)/double(INT_MAX);
         k=k+1;
         p=p*u;
 

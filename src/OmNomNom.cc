@@ -29,5 +29,6 @@ void OmNomNom::initialize() {
 
 void OmNomNom::handleMessage(cMessage *msg) {
     //DO OMNOMNOM
+    delete msg;
 }
 

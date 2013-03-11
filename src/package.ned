@@ -16,6 +16,7 @@ simple BaseGenerator
         int packetLength = default(20);
         double sessionLength = default(10.0);
         int packetPriority = default(3);
+        @statistic[timeChange](title="Wait Time"; source="send"; record=vector,stats; interpolationmode=none);
         @display("i=block/routing");
     gates:
         output out[];

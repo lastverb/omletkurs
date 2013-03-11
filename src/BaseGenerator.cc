@@ -32,6 +32,7 @@ void BaseGenerator::initialize() {
     lastGeneratedId = 0;
 
     timeChange = getTimeChange();
+    lastSessionUse = -1.0 - double(par("sessionLength"));
     scheduleAt(simTime() + timeChange, newMessageEvent);
 }
 
@@ -65,6 +66,12 @@ Packet *BaseGenerator::generatePacket(){
     packet->setPayloadArraySize(length);
     for(int i = 0;i < length;++i)
         packet->setPayload(i,intuniform(0,255));
+
+    simtime_t sessionLimit = lastSessionUse + par("sessionLength");
+    if(sessionLimit > simTime())
+        lastSessionId = intuniform(0, INT_MAX);
+    packet->setSessionId(lastSessionId);
+    lastSessionUse = simTime();
 
     return packet;
 }

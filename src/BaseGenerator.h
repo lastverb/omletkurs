@@ -18,6 +18,7 @@
 
 #include <omnetpp.h>
 #include "packet_m.h"
+#include <limits.h>
 
 class BaseGenerator: public cSimpleModule {
 private:
@@ -25,6 +26,8 @@ private:
     int lastGeneratedId;
     cMessage *newMessageEvent;
     simtime_t timeChange;
+    simtime_t lastSessionUse;
+    int lastSessionId;
 
 public:
     BaseGenerator();
