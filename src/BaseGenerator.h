@@ -23,15 +23,18 @@ class BaseGenerator: public cSimpleModule {
 private:
     simsignal_t messageSentSignal;
     int lastGeneratedId;
+    cMessage *newMessageEvent;
+    simtime_t timeChange;
 
 public:
     BaseGenerator();
     virtual ~BaseGenerator();
-    virtual void initialize();
-    virtual void handleMessage(cMessage *msg);
+    void initialize();
+    void handleMessage(cMessage *msg);
     //wszystkie generatory generuja i wysylaja pakiety w ten sam sposob
     Packet *generatePacket();
     void sendPacket(Packet *packet);
+    virtual simtime_t getTimeChange(); //przeciazana funkcja podajaca odstep czasu do nastepnej wiadomosci
 };
 
 #endif /* BASEGENERATOR_H_ */
