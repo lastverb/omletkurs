@@ -29,7 +29,14 @@ simple Poisson extends BaseGenerator{
         double lambda=default(10.0);
 }
 
-network laborki1
+simple Wykladniczy extends BaseGenerator{
+    
+    parameters:
+        @class(Wykladniczy);
+        double lambda=default(1.5);
+}
+
+network laborki1_1
 {
     types:
         channel Channel extends ned.DelayChannel {
@@ -45,5 +52,24 @@ network laborki1
         }
     connections:
       poisson1.out++ --> Channel --> omNomNom1.in;
+
+}
+
+network laborki1_2
+{
+    types:
+        channel Channel extends ned.DelayChannel {
+            delay = 100ms;
+        }
+    submodules:
+        omNomNom1: OmNomNom {
+            parameters:
+                @display("i=,gold");
+        }
+        wykladniczy1: Wykladniczy{
+            
+        }
+    connections:
+      wykladniczy1.out++ --> Channel --> omNomNom1.in;
 
 }
