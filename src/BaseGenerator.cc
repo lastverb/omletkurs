@@ -14,6 +14,7 @@
 // 
 
 #include "BaseGenerator.h"
+#include <math.h>
 #define FIRSTMESSAGETIME 0.0
 
 BaseGenerator::BaseGenerator() {

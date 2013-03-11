@@ -29,8 +29,8 @@ private:
 public:
     BaseGenerator();
     virtual ~BaseGenerator();
-    void initialize();
-    void handleMessage(cMessage *msg);
+    virtual void initialize();
+    virtual void handleMessage(cMessage *msg);
     //wszystkie generatory generuja i wysylaja pakiety w ten sam sposob
     Packet *generatePacket();
     void sendPacket(Packet *packet);
