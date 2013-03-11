@@ -60,7 +60,11 @@ Packet *BaseGenerator::generatePacket(){
     packet->setDst(dest);
     packet->setPacketId(id);
     packet->setPriorityClass(int(par("packetPriority")));
-    packet->setPayloadArraySize(int(par("packetLength")));
+
+    int length = par("packetLength");
+    packet->setPayloadArraySize(length);
+    for(int i = 0;i < length;++i)
+        packet->setPayload(i,intuniform(0,255));
 
     return packet;
 }
@@ -70,4 +74,8 @@ void BaseGenerator::sendPacket(Packet *packet){
     int k = intuniform(0, n-1);
 
     send(packet, "out", k);
+}
+
+simtime_t BaseGenerator::getTimeChange(){
+    return 1.0;
 }
