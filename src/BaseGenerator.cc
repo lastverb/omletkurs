@@ -24,8 +24,8 @@ BaseGenerator::~BaseGenerator() {
 
 }
 
-
 void BaseGenerator::initialize() {
+    initializeBonus();
     messageSentSignal = registerSignal("send");
 
     newMessageEvent = new cMessage("newMessageEvent");
@@ -34,6 +34,10 @@ void BaseGenerator::initialize() {
     timeChange = getTimeChange();
     lastSessionUse = -1.0 - double(par("sessionLength"));
     scheduleAt(simTime() + timeChange, newMessageEvent);
+}
+
+void BaseGenerator::initializeBonus() {
+
 }
 
 void BaseGenerator::handleMessage(cMessage *msg) {

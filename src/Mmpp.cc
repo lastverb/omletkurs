@@ -13,23 +13,33 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-#include "Wykladniczy.h"
+#include "Mmpp.h"
 
-Wykladniczy::Wykladniczy() {
+Mmpp::Mmpp() {
     // TODO Auto-generated constructor stub
 
 }
 
-Wykladniczy::~Wykladniczy() {
+Mmpp::~Mmpp() {
     // TODO Auto-generated destructor stub
 }
 
+simtime_t Mmpp::getTimeChange(){
+    int lambda[4] = {4,6,8,10};
+    int delay[4] = {0,10,20,30};
+    int random = intuniform(0,3);
 
-simtime_t Wykladniczy::getTimeChange(){
-    double lambda=par("lambda");
-    double u=intuniform(0,INT_MAX)/double(INT_MAX);
+    double l=exp(-lambda[random]);
+    int k=0;
+    double p=1;
 
-    double result=(-1/lambda)*log(u);
-    return result;
+    do{
+        double u=intuniform(0,INT_MAX)/double(INT_MAX);
+        k=k+1;
+        p=p*u;
+
+    }while(p>l);
+
+    return k-1 + delay[random];
 }
 

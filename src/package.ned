@@ -36,6 +36,22 @@ simple Wykladniczy extends BaseGenerator{
         double lambda=default(1.5);
 }
 
+simple OnOffGenerator extends BaseGenerator{
+    
+    parameters:
+        @class(OnOffGenerator);
+        double lambda = default(10.0);
+        int minChangeTime = default(50);
+        int maxChangeTime = default(100);
+}
+
+simple Mmpp extends BaseGenerator{
+    
+    parameters:
+        @class(Mmpp);
+        double lambda=default(10.0);
+}
+
 network laborki1_1
 {
     types:
@@ -71,5 +87,43 @@ network laborki1_2
         }
     connections:
       wykladniczy1.out++ --> Channel --> omNomNom1.in;
+
+}
+
+network laborki1_3A
+{
+    types:
+        channel Channel extends ned.DelayChannel {
+            delay = 100ms;
+        }
+    submodules:
+        omNomNom1: OmNomNom {
+            parameters:
+                @display("i=,gold");
+        }
+        onOff1: OnOffGenerator{
+            
+        }
+    connections:
+      onOff1.out++ --> Channel --> omNomNom1.in;
+
+}
+
+network laborki1_4
+{
+    types:
+        channel Channel extends ned.DelayChannel {
+            delay = 100ms;
+        }
+    submodules:
+        omNomNom1: OmNomNom {
+            parameters:
+                @display("i=,gold");
+        }
+        mmpp1: Mmpp{
+            
+        }
+    connections:
+      mmpp1.out++ --> Channel --> omNomNom1.in;
 
 }

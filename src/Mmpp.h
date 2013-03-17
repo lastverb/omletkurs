@@ -13,23 +13,17 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-#include "Wykladniczy.h"
+#ifndef MMPP_H_
+#define MMPP_H_
+#include "BaseGenerator.h"
 
-Wykladniczy::Wykladniczy() {
-    // TODO Auto-generated constructor stub
+class Mmpp : public BaseGenerator{
+public:
+    Mmpp();
+    virtual ~Mmpp();
+    virtual simtime_t getTimeChange();
+};
 
-}
+Define_Module(Mmpp);
 
-Wykladniczy::~Wykladniczy() {
-    // TODO Auto-generated destructor stub
-}
-
-
-simtime_t Wykladniczy::getTimeChange(){
-    double lambda=par("lambda");
-    double u=intuniform(0,INT_MAX)/double(INT_MAX);
-
-    double result=(-1/lambda)*log(u);
-    return result;
-}
-
+#endif /* MMPP_H_ */

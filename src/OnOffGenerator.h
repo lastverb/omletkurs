@@ -13,23 +13,24 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-#include "Wykladniczy.h"
+#ifndef ONOFFGENERATOR_H_
+#define ONOFFGENERATOR_H_
 
-Wykladniczy::Wykladniczy() {
-    // TODO Auto-generated constructor stub
+#include "BaseGenerator.h"
 
-}
+class OnOffGenerator: public BaseGenerator {
+private:
+    int minChangeTime;
+    int maxChangeTime;
+    simtime_t nextChangeTime;
 
-Wykladniczy::~Wykladniczy() {
-    // TODO Auto-generated destructor stub
-}
+public:
+    OnOffGenerator();
+    virtual ~OnOffGenerator();
+    virtual void initializeBonus();
+    virtual simtime_t getTimeChange();
+};
 
+Define_Module(OnOffGenerator);
 
-simtime_t Wykladniczy::getTimeChange(){
-    double lambda=par("lambda");
-    double u=intuniform(0,INT_MAX)/double(INT_MAX);
-
-    double result=(-1/lambda)*log(u);
-    return result;
-}
-
+#endif /* ONOFFGENERATOR_H_ */
