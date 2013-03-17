@@ -2,3 +2,7 @@
 /out
 *.exe
 /.metadata
+*.anf
+*.sca
+*.vci
+*.vec
