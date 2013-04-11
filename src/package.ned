@@ -13,7 +13,8 @@ simple OmNomNom
 simple BaseGenerator
 {
     parameters:
-        int packetLength = default(20);
+        int packetLengthMin = default(10);
+        int packetLengthMax = default(30);
         double sessionLength = default(10.0);
         int packetPriority = default(3);
         @statistic[timeChange](title="Wait Time"; source="send"; record=vector,stats; interpolationmode=none);
