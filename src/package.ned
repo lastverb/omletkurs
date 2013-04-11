@@ -65,6 +65,8 @@ simple Worker
 
 simple AdmissionControlModule
 {
+    parameters:
+        int maxQueueSize = default(200);
     gates:
         input inGates[];
         inout outGates[];
@@ -74,14 +76,30 @@ simple TailDrop extends AdmissionControlModule
 {
     parameters:
         @class(TailDrop);
-        int maxQueueSize = default(200);
 }
 
 simple FrontDrop extends AdmissionControlModule
 {
     parameters:
         @class(FrontDrop);
-        int maxQueueSize = default(200);
+}
+
+simple RED extends AdmissionControlModule
+{
+    parameters:
+        @class(RED);
+        int minT = default(100);
+        double multiplier = default(0.4);
+}
+
+simple WRED extends AdmissionControlModule
+{
+    parameters:
+        @class(WRED);
+        int minTmin = default(50);
+        int minTmax = default(150);
+        double multiplierMin = default(0.2);
+        double multiplierMax = default(0.6);
 }
 
 network laborki1_1
@@ -187,3 +205,36 @@ network laborki2_12
       generator1.out++ --> Channel --> adm1.inGates++;
       adm1.outGates++ <--> NoDelay <--> worker1.gate;
 }
+
+network laborki2_13
+{
+    types:
+        channel Channel extends ned.DelayChannel {
+            delay = 100ms;
+        }
+        channel NoDelay extends ned.IdealChannel {}
+    submodules:
+        generator1: Poisson {}
+        adm1: RED {}
+        worker1: Worker {}
+    connections:
+      generator1.out++ --> Channel --> adm1.inGates++;
+      adm1.outGates++ <--> NoDelay <--> worker1.gate;
+}
+
+network laborki2_14
+{
+    types:
+        channel Channel extends ned.DelayChannel {
+            delay = 100ms;
+        }
+        channel NoDelay extends ned.IdealChannel {}
+    submodules:
+        generator1: Poisson {}
+        adm1: WRED {}
+        worker1: Worker {}
+    connections:
+      generator1.out++ --> Channel --> adm1.inGates++;
+      adm1.outGates++ <--> NoDelay <--> worker1.gate;
+}
+

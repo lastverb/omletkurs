@@ -36,8 +36,10 @@ OBJS = \
     $O/OmNomNom.o \
     $O/OnOffGenerator.o \
     $O/Poisson.o \
+    $O/RED.o \
     $O/TailDrop.o \
     $O/Worker.o \
+    $O/WRED.o \
     $O/Wykladniczy.o \
     $O/jobDone_m.o \
     $O/packet_m.o
@@ -149,9 +151,19 @@ $O/Poisson.o: Poisson.cc \
 	BaseGenerator.h \
 	Poisson.h \
 	packet_m.h
+$O/RED.o: RED.cc \
+	AdmissionControlModule.h \
+	RED.h \
+	jobDone_m.h \
+	packet_m.h
 $O/TailDrop.o: TailDrop.cc \
 	AdmissionControlModule.h \
 	TailDrop.h \
+	jobDone_m.h \
+	packet_m.h
+$O/WRED.o: WRED.cc \
+	AdmissionControlModule.h \
+	WRED.h \
 	jobDone_m.h \
 	packet_m.h
 $O/Worker.o: Worker.cc \

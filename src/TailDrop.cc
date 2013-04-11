@@ -24,12 +24,6 @@ TailDrop::~TailDrop() {
     // TODO Auto-generated destructor stub
 }
 
-void TailDrop::initialize()
-{
-    AdmissionControlModule::initialize();
-    maxQueueSize = par("maxQueueSize");
-}
-
 void TailDrop::newIncomePacket(Packet *p)
 {
     if(queueSize + p->getPayloadArraySize() > maxQueueSize)
