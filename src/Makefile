@@ -29,6 +29,7 @@ O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Object files for local .cc and .msg files
 OBJS = \
+    $O/AdmissionControlModule.o \
     $O/BaseGenerator.o \
     $O/Mmpp.o \
     $O/OmNomNom.o \
@@ -120,6 +121,10 @@ depend:
 	$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
+$O/AdmissionControlModule.o: AdmissionControlModule.cc \
+	AdmissionControlModule.h \
+	jobDone_m.h \
+	packet_m.h
 $O/BaseGenerator.o: BaseGenerator.cc \
 	BaseGenerator.h \
 	packet_m.h

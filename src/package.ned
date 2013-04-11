@@ -61,6 +61,12 @@ simple Worker{
         inout gate;
 }
 
+simple AdmissionControlModule{
+    gates:
+        inout inGates[];
+        inout outGates;
+}
+
 network laborki1_1
 {
     types:
