@@ -13,18 +13,18 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-#include "WRoundRobin.h"
+#include "RoundRobin2.h"
 
-WRoundRobin::WRoundRobin() {
+RoundRobin2::RoundRobin2() {
     // TODO Auto-generated constructor stub
 
 }
 
-WRoundRobin::~WRoundRobin() {
+RoundRobin2::~RoundRobin2() {
     // TODO Auto-generated destructor stub
 }
 
-void WRoundRobin::initialize() {
+void RoundRobin2::initialize() {
     messageSentSignal = registerSignal("send");
     processEvent = new cMessage("process");
 
@@ -34,13 +34,12 @@ void WRoundRobin::initialize() {
     int n = gateSize("in");
     queues.resize(n);
     schedule.resize(n);
-    computeWeights();
 
 
     scheduleAt(simTime() + quantumLength, processEvent);
 }
 
-void WRoundRobin::handleMessage(cMessage *msg) {
+void RoundRobin2::handleMessage(cMessage *msg) {
 
     if(msg!=processEvent){
         Packet *packet = check_and_cast<Packet *>(msg);
@@ -50,7 +49,6 @@ void WRoundRobin::handleMessage(cMessage *msg) {
     }else{
         if(queues[lastServedQueue].size()>0){
             double time=0.0;
-            for(int i=0;i<schedule[lastServedQueue];i++){
                 if(queues[lastServedQueue].size()>0){
                     double k=ceil(queues[lastServedQueue].begin()->getTime()/quantum);
                     time+=k*quantum;
@@ -59,9 +57,8 @@ void WRoundRobin::handleMessage(cMessage *msg) {
                     EV<<"mial "<< queues[lastServedQueue].begin()->getTime() << " \n";
                     bubble("obsluzony i usuniety ");
                     queues[lastServedQueue].erase(queues[lastServedQueue].begin());
-                    EV <<" dl kolejki po"<<queues[lastServedQueue].size() <<"czas czekania "<< time << " \n";
+                    EV <<" dl kolejki po"<<queues[lastServedQueue].size() << " \n";
                 }
-            }
 
             lastServedQueue++;
             if(lastServedQueue>=queues.size()){
@@ -81,7 +78,7 @@ void WRoundRobin::handleMessage(cMessage *msg) {
 
 }
 
-void WRoundRobin::computeWeights(){
+void RoundRobin2::computeWeights(){
     for(int i=0;i<schedule.size();i++){
         schedule[i]=intuniform(1, schedule.size()*2);
     }

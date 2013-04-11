@@ -29,18 +29,26 @@ O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Object files for local .cc and .msg files
 OBJS = \
+    $O/AdmissionControlModule.o \
     $O/BaseGenerator.o \
+    $O/FrontDrop.o \
     $O/Mmpp.o \
     $O/OmNomNom.o \
     $O/OnOffGenerator.o \
     $O/Poisson.o \
     $O/RoundRobin.o \
+    $O/RoundRobin2.o \
+    $O/TailDrop.o \
+    $O/WFQ.o \
+    $O/Worker.o \
     $O/WRoundRobin.o \
     $O/Wykladniczy.o \
+    $O/jobDone_m.o \
     $O/packet_m.o
 
 # Message files
 MSGFILES = \
+    jobDone.msg \
     packet.msg
 
 #------------------------------------------------------------------------------
@@ -120,8 +128,17 @@ depend:
 	$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc results/*.cc
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
+$O/AdmissionControlModule.o: AdmissionControlModule.cc \
+	AdmissionControlModule.h \
+	jobDone_m.h \
+	packet_m.h
 $O/BaseGenerator.o: BaseGenerator.cc \
 	BaseGenerator.h \
+	packet_m.h
+$O/FrontDrop.o: FrontDrop.cc \
+	AdmissionControlModule.h \
+	FrontDrop.h \
+	jobDone_m.h \
 	packet_m.h
 $O/Mmpp.o: Mmpp.cc \
 	BaseGenerator.h \
@@ -140,13 +157,30 @@ $O/Poisson.o: Poisson.cc \
 $O/RoundRobin.o: RoundRobin.cc \
 	RoundRobin.h \
 	packet_m.h
+$O/RoundRobin2.o: RoundRobin2.cc \
+	RoundRobin2.h \
+	packet_m.h
+$O/TailDrop.o: TailDrop.cc \
+	AdmissionControlModule.h \
+	TailDrop.h \
+	jobDone_m.h \
+	packet_m.h
+$O/WFQ.o: WFQ.cc \
+	WFQ.h \
+	packet_m.h
 $O/WRoundRobin.o: WRoundRobin.cc \
 	WRoundRobin.h \
+	packet_m.h
+$O/Worker.o: Worker.cc \
+	Worker.h \
+	jobDone_m.h \
 	packet_m.h
 $O/Wykladniczy.o: Wykladniczy.cc \
 	BaseGenerator.h \
 	Wykladniczy.h \
 	packet_m.h
+$O/jobDone_m.o: jobDone_m.cc \
+	jobDone_m.h
 $O/packet_m.o: packet_m.cc \
 	packet_m.h
 

@@ -18,7 +18,26 @@ simple RoundRobin
     gates:
         input in[];
 }
+
+simple RoundRobin2
+{
+    parameters:
+        double quantumLength = default(5.0);
+        @display("i=block/routing");
+    gates:
+        input in[];
+}
+
 simple WRoundRobin
+{
+    parameters:
+        double quantumLength = default(5.0);
+        @display("i=block/routing");
+    gates:
+        input in[];
+}
+
+simple WFQ
 {
     parameters:
         double quantumLength = default(5.0);
@@ -30,7 +49,8 @@ simple WRoundRobin
 simple BaseGenerator
 {
     parameters:
-        int packetLength = default(20);
+        int packetLengthMin = default(5);
+        int packetLengthMax = default(20);
         double sessionLength = default(10.0);
         int packetPriority = default(3);
         double quantumLength = default(10.0);
@@ -40,22 +60,22 @@ simple BaseGenerator
         output out[];
 }
 
-simple Poisson extends BaseGenerator{
-    
+simple Poisson extends BaseGenerator
+{
     parameters:
         @class(Poisson);
         double lambda=default(10.0);
 }
 
-simple Wykladniczy extends BaseGenerator{
-    
+simple Wykladniczy extends BaseGenerator
+{
     parameters:
         @class(Wykladniczy);
         double lambda=default(1.5);
 }
 
-simple OnOffGenerator extends BaseGenerator{
-    
+simple OnOffGenerator extends BaseGenerator
+{
     parameters:
         @class(OnOffGenerator);
         double lambda = default(10.0);
@@ -63,11 +83,42 @@ simple OnOffGenerator extends BaseGenerator{
         int maxChangeTime = default(100);
 }
 
-simple Mmpp extends BaseGenerator{
-    
+simple Mmpp extends BaseGenerator
+{
     parameters:
         @class(Mmpp);
         double lambda=default(10.0);
+}
+
+simple Worker
+{
+    parameters:
+        int workerId = default(0);
+        double jobTimeMin = default(1.0);
+    	double jobTimePerByte = default(0.1);
+    gates:
+        inout gate;
+}
+
+simple AdmissionControlModule
+{
+    gates:
+        input inGates[];
+        inout outGates[];
+}
+
+simple TailDrop extends AdmissionControlModule
+{
+    parameters:
+        @class(TailDrop);
+        int maxQueueSize = default(200);
+}
+
+simple FrontDrop extends AdmissionControlModule
+{
+    parameters:
+        @class(FrontDrop);
+        int maxQueueSize = default(200);
 }
 
 network laborki1_1
@@ -86,7 +137,6 @@ network laborki1_1
         }
     connections:
       poisson1.out++ --> Channel --> omNomNom1.in;
-
 }
 
 network laborki1_2
@@ -105,7 +155,6 @@ network laborki1_2
         }
     connections:
       wykladniczy1.out++ --> Channel --> omNomNom1.in;
-
 }
 
 network laborki1_3A
@@ -124,7 +173,6 @@ network laborki1_3A
         }
     connections:
       onOff1.out++ --> Channel --> omNomNom1.in;
-
 }
 
 network laborki1_4
@@ -143,7 +191,38 @@ network laborki1_4
         }
     connections:
       mmpp1.out++ --> Channel --> omNomNom1.in;
+}
 
+network laborki2_11
+{
+    types:
+        channel Channel extends ned.DelayChannel {
+            delay = 100ms;
+        }
+        channel NoDelay extends ned.IdealChannel {}
+    submodules:
+        generator1: Poisson {}
+        adm1: TailDrop {}
+        worker1: Worker {}
+    connections:
+      generator1.out++ --> Channel --> adm1.inGates++;
+      adm1.outGates++ <--> NoDelay <--> worker1.gate;
+}
+
+network laborki2_12
+{
+    types:
+        channel Channel extends ned.DelayChannel {
+            delay = 100ms;
+        }
+        channel NoDelay extends ned.IdealChannel {}
+    submodules:
+        generator1: Poisson {}
+        adm1: FrontDrop {}
+        worker1: Worker {}
+    connections:
+      generator1.out++ --> Channel --> adm1.inGates++;
+      adm1.outGates++ <--> NoDelay <--> worker1.gate;
 }
 
 network laborki2_RR
@@ -154,6 +233,28 @@ network laborki2_RR
         }
     submodules:
         rr: RoundRobin {
+            parameters:
+                @display("i=,gold");
+        }
+        wykladniczy[3]: Wykladniczy{
+            
+        }
+        
+    connections:
+      wykladniczy[0].out++ --> Channel --> rr.in++;
+      wykladniczy[1].out++ --> Channel --> rr.in++;
+      wykladniczy[2].out++ --> Channel --> rr.in++;
+
+}
+
+network laborki2_RR2
+{
+    types:
+        channel Channel extends ned.DelayChannel {
+            delay = 100ms;
+        }
+    submodules:
+        rr: RoundRobin2 {
             parameters:
                 @display("i=,gold");
         }
@@ -187,5 +288,27 @@ network laborki2_WRR
       wykladniczy[0].out++ --> Channel --> wrr.in++;
       wykladniczy[1].out++ --> Channel --> wrr.in++;
       wykladniczy[2].out++ --> Channel --> wrr.in++;
+
+}
+
+network laborki2_WFQ
+{
+    types:
+        channel Channel extends ned.DelayChannel {
+            delay = 100ms;
+        }
+    submodules:
+        wfq: WFQ {
+            parameters:
+                @display("i=,gold");
+        }
+        wykladniczy[3]: Wykladniczy{
+            
+        }
+        
+    connections:
+      wykladniczy[0].out++ --> Channel --> wfq.in++;
+      wykladniczy[1].out++ --> Channel --> wfq.in++;
+      wykladniczy[2].out++ --> Channel --> wfq.in++;
 
 }
