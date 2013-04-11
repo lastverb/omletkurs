@@ -24,6 +24,7 @@
  *     int sessionId;
  *     int packetId;
  *     int priorityClass;
+ *     double time;
  *     unsigned char payload[];
  * }
  * </pre>
@@ -36,6 +37,7 @@ class Packet : public ::cPacket
     int sessionId_var;
     int packetId_var;
     int priorityClass_var;
+    double time_var;
     unsigned char *payload_var; // array ptr
     unsigned int payload_arraysize;
 
@@ -66,6 +68,8 @@ class Packet : public ::cPacket
     virtual void setPacketId(int packetId);
     virtual int getPriorityClass() const;
     virtual void setPriorityClass(int priorityClass);
+    virtual double getTime() const;
+    virtual void setTime(double time);
     virtual void setPayloadArraySize(unsigned int size);
     virtual unsigned int getPayloadArraySize() const;
     virtual unsigned char getPayload(unsigned int k) const;

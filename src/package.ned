@@ -10,12 +10,30 @@ simple OmNomNom
         input in;
 }
 
+simple RoundRobin
+{
+    parameters:
+        double quantumLength = default(5.0);
+        @display("i=block/routing");
+    gates:
+        input in[];
+}
+simple WRoundRobin
+{
+    parameters:
+        double quantumLength = default(5.0);
+        @display("i=block/routing");
+    gates:
+        input in[];
+}
+
 simple BaseGenerator
 {
     parameters:
         int packetLength = default(20);
         double sessionLength = default(10.0);
         int packetPriority = default(3);
+        double quantumLength = default(10.0);
         @statistic[timeChange](title="Wait Time"; source="send"; record=vector,stats; interpolationmode=none);
         @display("i=block/routing");
     gates:
@@ -125,5 +143,49 @@ network laborki1_4
         }
     connections:
       mmpp1.out++ --> Channel --> omNomNom1.in;
+
+}
+
+network laborki2_RR
+{
+    types:
+        channel Channel extends ned.DelayChannel {
+            delay = 100ms;
+        }
+    submodules:
+        rr: RoundRobin {
+            parameters:
+                @display("i=,gold");
+        }
+        wykladniczy[3]: Wykladniczy{
+            
+        }
+        
+    connections:
+      wykladniczy[0].out++ --> Channel --> rr.in++;
+      wykladniczy[1].out++ --> Channel --> rr.in++;
+      wykladniczy[2].out++ --> Channel --> rr.in++;
+
+}
+
+network laborki2_WRR
+{
+    types:
+        channel Channel extends ned.DelayChannel {
+            delay = 100ms;
+        }
+    submodules:
+        wrr: WRoundRobin {
+            parameters:
+                @display("i=,gold");
+        }
+        wykladniczy[3]: Wykladniczy{
+            
+        }
+        
+    connections:
+      wykladniczy[0].out++ --> Channel --> wrr.in++;
+      wykladniczy[1].out++ --> Channel --> wrr.in++;
+      wykladniczy[2].out++ --> Channel --> wrr.in++;
 
 }
