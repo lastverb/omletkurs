@@ -22,22 +22,22 @@ simple BaseGenerator
         output out[];
 }
 
-simple Poisson extends BaseGenerator{
-    
+simple Poisson extends BaseGenerator
+{
     parameters:
         @class(Poisson);
         double lambda=default(10.0);
 }
 
-simple Wykladniczy extends BaseGenerator{
-    
+simple Wykladniczy extends BaseGenerator
+{
     parameters:
         @class(Wykladniczy);
         double lambda=default(1.5);
 }
 
-simple OnOffGenerator extends BaseGenerator{
-    
+simple OnOffGenerator extends BaseGenerator
+{
     parameters:
         @class(OnOffGenerator);
         double lambda = default(10.0);
@@ -45,14 +45,15 @@ simple OnOffGenerator extends BaseGenerator{
         int maxChangeTime = default(100);
 }
 
-simple Mmpp extends BaseGenerator{
-    
+simple Mmpp extends BaseGenerator
+{
     parameters:
         @class(Mmpp);
         double lambda=default(10.0);
 }
 
-simple Worker{
+simple Worker
+{
     parameters:
         int workerId = default(0);
         double jobTimeMin = default(1.0);
@@ -61,10 +62,25 @@ simple Worker{
         inout gate;
 }
 
-simple AdmissionControlModule{
+simple AdmissionControlModule
+{
     gates:
-        inout inGates[];
-        inout outGates;
+        input inGates[];
+        inout outGates[];
+}
+
+simple TailDrop extends AdmissionControlModule
+{
+    parameters:
+        @class(TailDrop);
+        int maxQueueSize = default(200);
+}
+
+simple FrontDrop extends AdmissionControlModule
+{
+    parameters:
+        @class(FrontDrop);
+        int maxQueueSize = default(200);
 }
 
 network laborki1_1
@@ -83,7 +99,6 @@ network laborki1_1
         }
     connections:
       poisson1.out++ --> Channel --> omNomNom1.in;
-
 }
 
 network laborki1_2
@@ -102,7 +117,6 @@ network laborki1_2
         }
     connections:
       wykladniczy1.out++ --> Channel --> omNomNom1.in;
-
 }
 
 network laborki1_3A
@@ -121,7 +135,6 @@ network laborki1_3A
         }
     connections:
       onOff1.out++ --> Channel --> omNomNom1.in;
-
 }
 
 network laborki1_4
@@ -140,5 +153,36 @@ network laborki1_4
         }
     connections:
       mmpp1.out++ --> Channel --> omNomNom1.in;
+}
 
+network laborki2_11
+{
+    types:
+        channel Channel extends ned.DelayChannel {
+            delay = 100ms;
+        }
+        channel NoDelay extends ned.IdealChannel {}
+    submodules:
+        generator1: Poisson {}
+        adm1: TailDrop {}
+        worker1: Worker {}
+    connections:
+      generator1.out++ --> Channel --> adm1.inGates++;
+      adm1.outGates++ <--> NoDelay <--> worker1.gate;
+}
+
+network laborki2_12
+{
+    types:
+        channel Channel extends ned.DelayChannel {
+            delay = 100ms;
+        }
+        channel NoDelay extends ned.IdealChannel {}
+    submodules:
+        generator1: Poisson {}
+        adm1: FrontDrop {}
+        worker1: Worker {}
+    connections:
+      generator1.out++ --> Channel --> adm1.inGates++;
+      adm1.outGates++ <--> NoDelay <--> worker1.gate;
 }

@@ -13,46 +13,45 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-#include "Worker.h"
+#include "FrontDrop.h"
 
-Worker::Worker() {
+FrontDrop::FrontDrop() {
+    // TODO Auto-generated constructor stub
 
 }
 
-Worker::~Worker() {
-    delete doneMsg;
+FrontDrop::~FrontDrop() {
+    // TODO Auto-generated destructor stub
 }
 
-void Worker::initialize()
+void FrontDrop::initialize()
 {
-    workerId = par("workerId");
-    jobTimeMin = double(par("jobTimeMin"));
-    jobTimePerByte = double(par("jobTimePerByte"));
-    doneMsg = new cMessage("doneMsg");
-    jobDone();
+    AdmissionControlModule::initialize();
+    maxQueueSize = par("maxQueueSize");
 }
 
-void Worker::handleMessage(cMessage *msg)
+void FrontDrop::newIncomePacket(Packet *p)
 {
-    if(msg == doneMsg)
+    if(queueSize + p->getPayloadArraySize() > maxQueueSize)
     {
-        jobDone();
+        reject(p);
     }
     else
     {
-        scheduleAt(simTime() + getJobTime( check_and_cast<Packet *>(msg) ), doneMsg);
-        delete msg;
+        accept(p);
     }
 }
 
-double Worker::getJobTime(Packet *p)
+void FrontDrop::reject(Packet *p)
 {
-    return jobTimeMin + jobTimePerByte * p->getPayloadArraySize();
+    if(!q.empty())
+    {
+        Packet *t = q.front();
+        q.erase(q.begin());
+        delete t;
+    }
+    accept(p);
 }
 
-void Worker::jobDone()
-{
-    JobDone* msg = new JobDone("jobDone");
-    msg->setWorkerId(workerId);
-    send(msg, "gate$o");
-}
+
+

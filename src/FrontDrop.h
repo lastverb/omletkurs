@@ -13,35 +13,23 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-#ifndef ADMISSIONCONTROLMODULE_H_
-#define ADMISSIONCONTROLMODULE_H_
+#ifndef FRONTDROP_H_
+#define FRONTDROP_H_
 
-#include <omnetpp.h>
-#include "packet_m.h"
-#include "jobDone_m.h"
-#include <csimplemodule.h>
+#include "AdmissionControlModule.h"
 
-using namespace std;
-
-class AdmissionControlModule: public cSimpleModule {
+class FrontDrop: public AdmissionControlModule {
 private:
-    bool readyToSend;
-
-protected:
-    unsigned int queueSize;
-    vector<Packet *> q;
+    unsigned int maxQueueSize;
 
 public:
-    AdmissionControlModule();
-    virtual ~AdmissionControlModule();
+    FrontDrop();
+    virtual ~FrontDrop();
     virtual void initialize();
-    virtual void handleMessage(cMessage *msg);
     virtual void newIncomePacket(Packet *p);
-    virtual void accept(Packet *p);
     virtual void reject(Packet *p);
-    void checkAndSend();
 };
 
-Define_Module(AdmissionControlModule);
+Define_Module(FrontDrop);
 
-#endif /* ADMISSIONCONTROLMODULE_H_ */
+#endif /* FRONTDROP_H_ */

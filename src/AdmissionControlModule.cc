@@ -27,6 +27,7 @@ AdmissionControlModule::~AdmissionControlModule() {
 void AdmissionControlModule::initialize()
 {
     readyToSend = false;
+    queueSize = 0;
 }
 
 void AdmissionControlModule::handleMessage(cMessage *msg)
@@ -35,6 +36,7 @@ void AdmissionControlModule::handleMessage(cMessage *msg)
     {
         readyToSend = true;
         checkAndSend();
+        delete msg;
     }
     else
     {
@@ -52,17 +54,19 @@ void AdmissionControlModule::newIncomePacket(Packet *p)
 void AdmissionControlModule::accept(Packet *p)
 {
     q.push_back(p);
+    queueSize += p->getPayloadArraySize();
 }
 
 void AdmissionControlModule::reject(Packet *p)
 {
-    //TODO do sth?
+    delete p;
 }
 
 void AdmissionControlModule::checkAndSend()
 {
     if(!readyToSend || q.empty()) return;
     readyToSend = false;
-    send(q.front(),"outGates",0);
+    send(q.front(),"outGates$o",0);
+    queueSize -= q.front()->getPayloadArraySize();
     q.erase(q.begin());
 }

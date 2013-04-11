@@ -31,10 +31,12 @@ O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 OBJS = \
     $O/AdmissionControlModule.o \
     $O/BaseGenerator.o \
+    $O/FrontDrop.o \
     $O/Mmpp.o \
     $O/OmNomNom.o \
     $O/OnOffGenerator.o \
     $O/Poisson.o \
+    $O/TailDrop.o \
     $O/Worker.o \
     $O/Wykladniczy.o \
     $O/jobDone_m.o \
@@ -128,6 +130,11 @@ $O/AdmissionControlModule.o: AdmissionControlModule.cc \
 $O/BaseGenerator.o: BaseGenerator.cc \
 	BaseGenerator.h \
 	packet_m.h
+$O/FrontDrop.o: FrontDrop.cc \
+	AdmissionControlModule.h \
+	FrontDrop.h \
+	jobDone_m.h \
+	packet_m.h
 $O/Mmpp.o: Mmpp.cc \
 	BaseGenerator.h \
 	Mmpp.h \
@@ -141,6 +148,11 @@ $O/OnOffGenerator.o: OnOffGenerator.cc \
 $O/Poisson.o: Poisson.cc \
 	BaseGenerator.h \
 	Poisson.h \
+	packet_m.h
+$O/TailDrop.o: TailDrop.cc \
+	AdmissionControlModule.h \
+	TailDrop.h \
+	jobDone_m.h \
 	packet_m.h
 $O/Worker.o: Worker.cc \
 	Worker.h \

@@ -13,46 +13,32 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-#include "Worker.h"
+#include "TailDrop.h"
 
-Worker::Worker() {
+TailDrop::TailDrop() {
+    // TODO Auto-generated constructor stub
 
 }
 
-Worker::~Worker() {
-    delete doneMsg;
+TailDrop::~TailDrop() {
+    // TODO Auto-generated destructor stub
 }
 
-void Worker::initialize()
+void TailDrop::initialize()
 {
-    workerId = par("workerId");
-    jobTimeMin = double(par("jobTimeMin"));
-    jobTimePerByte = double(par("jobTimePerByte"));
-    doneMsg = new cMessage("doneMsg");
-    jobDone();
+    AdmissionControlModule::initialize();
+    maxQueueSize = par("maxQueueSize");
 }
 
-void Worker::handleMessage(cMessage *msg)
+void TailDrop::newIncomePacket(Packet *p)
 {
-    if(msg == doneMsg)
+    if(queueSize + p->getPayloadArraySize() > maxQueueSize)
     {
-        jobDone();
+        reject(p);
     }
     else
     {
-        scheduleAt(simTime() + getJobTime( check_and_cast<Packet *>(msg) ), doneMsg);
-        delete msg;
+        accept(p);
     }
 }
 
-double Worker::getJobTime(Packet *p)
-{
-    return jobTimeMin + jobTimePerByte * p->getPayloadArraySize();
-}
-
-void Worker::jobDone()
-{
-    JobDone* msg = new JobDone("jobDone");
-    msg->setWorkerId(workerId);
-    send(msg, "gate$o");
-}
