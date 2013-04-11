@@ -52,6 +52,15 @@ simple Mmpp extends BaseGenerator{
         double lambda=default(10.0);
 }
 
+simple Worker{
+    parameters:
+        int workerId = default(0);
+        double jobTimeMin = default(1.0);
+    	double jobTimePerByte = default(0.1);
+    gates:
+        inout gate;
+}
+
 network laborki1_1
 {
     types:

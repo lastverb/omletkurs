@@ -34,11 +34,14 @@ OBJS = \
     $O/OmNomNom.o \
     $O/OnOffGenerator.o \
     $O/Poisson.o \
+    $O/Worker.o \
     $O/Wykladniczy.o \
+    $O/jobDone_m.o \
     $O/packet_m.o
 
 # Message files
 MSGFILES = \
+    jobDone.msg \
     packet.msg
 
 #------------------------------------------------------------------------------
@@ -134,10 +137,16 @@ $O/Poisson.o: Poisson.cc \
 	BaseGenerator.h \
 	Poisson.h \
 	packet_m.h
+$O/Worker.o: Worker.cc \
+	Worker.h \
+	jobDone_m.h \
+	packet_m.h
 $O/Wykladniczy.o: Wykladniczy.cc \
 	BaseGenerator.h \
 	Wykladniczy.h \
 	packet_m.h
+$O/jobDone_m.o: jobDone_m.cc \
+	jobDone_m.h
 $O/packet_m.o: packet_m.cc \
 	packet_m.h
 
