@@ -27,14 +27,14 @@ simple Poisson extends BaseGenerator
 {
     parameters:
         @class(Poisson);
-        double lambda=default(10.0);
+        double lambda = default(10.0);
 }
 
 simple Wykladniczy extends BaseGenerator
 {
     parameters:
         @class(Wykladniczy);
-        double lambda=default(1.5);
+        double lambda = default(1.5);
 }
 
 simple OnOffGenerator extends BaseGenerator
@@ -50,7 +50,7 @@ simple Mmpp extends BaseGenerator
 {
     parameters:
         @class(Mmpp);
-        double lambda=default(10.0);
+        double lambda = default(10.0);
 }
 
 simple Worker
@@ -58,7 +58,7 @@ simple Worker
     parameters:
         int workerId = default(0);
         double jobTimeMin = default(1.0);
-    	double jobTimePerByte = default(0.1);
+        double jobTimePerByte = default(0.1);
     gates:
         inout gate;
 }
@@ -102,10 +102,18 @@ simple WRED extends AdmissionControlModule
         double multiplierMax = default(0.6);
 }
 
+simple LeakyBucket
+{
+    gates:
+        input in[];
+        output out[];
+}
+
 network laborki1_1
 {
     types:
-        channel Channel extends ned.DelayChannel {
+        channel Channel extends ned.DelayChannel
+        {
             delay = 100ms;
         }
     submodules:
@@ -113,17 +121,16 @@ network laborki1_1
             parameters:
                 @display("i=,gold");
         }
-        poisson1: Poisson{
-            
-        }
+        poisson1: Poisson;
     connections:
-      poisson1.out++ --> Channel --> omNomNom1.in;
+        poisson1.out++ --> Channel --> omNomNom1.in;
 }
 
 network laborki1_2
 {
     types:
-        channel Channel extends ned.DelayChannel {
+        channel Channel extends ned.DelayChannel
+        {
             delay = 100ms;
         }
     submodules:
@@ -131,17 +138,16 @@ network laborki1_2
             parameters:
                 @display("i=,gold");
         }
-        wykladniczy1: Wykladniczy{
-            
-        }
+        wykladniczy1: Wykladniczy;
     connections:
-      wykladniczy1.out++ --> Channel --> omNomNom1.in;
+        wykladniczy1.out++ --> Channel --> omNomNom1.in;
 }
 
 network laborki1_3A
 {
     types:
-        channel Channel extends ned.DelayChannel {
+        channel Channel extends ned.DelayChannel
+        {
             delay = 100ms;
         }
     submodules:
@@ -149,17 +155,16 @@ network laborki1_3A
             parameters:
                 @display("i=,gold");
         }
-        onOff1: OnOffGenerator{
-            
-        }
+        onOff1: OnOffGenerator;
     connections:
-      onOff1.out++ --> Channel --> omNomNom1.in;
+        onOff1.out++ --> Channel --> omNomNom1.in;
 }
 
 network laborki1_4
 {
     types:
-        channel Channel extends ned.DelayChannel {
+        channel Channel extends ned.DelayChannel
+        {
             delay = 100ms;
         }
     submodules:
@@ -167,74 +172,101 @@ network laborki1_4
             parameters:
                 @display("i=,gold");
         }
-        mmpp1: Mmpp{
-            
-        }
+        mmpp1: Mmpp;
     connections:
-      mmpp1.out++ --> Channel --> omNomNom1.in;
+        mmpp1.out++ --> Channel --> omNomNom1.in;
 }
 
 network laborki2_11
 {
     types:
-        channel Channel extends ned.DelayChannel {
+        channel Channel extends ned.DelayChannel
+        {
             delay = 100ms;
         }
-        channel NoDelay extends ned.IdealChannel {}
+        channel NoDelay extends ned.IdealChannel
+        {
+        }
     submodules:
-        generator1: Poisson {}
-        adm1: TailDrop {}
-        worker1: Worker {}
+        generator1: Poisson;
+        adm1: TailDrop;
+        worker1: Worker;
     connections:
-      generator1.out++ --> Channel --> adm1.inGates++;
-      adm1.outGates++ <--> NoDelay <--> worker1.gate;
+        generator1.out++ --> Channel --> adm1.inGates++;
+        adm1.outGates++ <--> NoDelay <--> worker1.gate;
 }
 
 network laborki2_12
 {
     types:
-        channel Channel extends ned.DelayChannel {
+        channel Channel extends ned.DelayChannel
+        {
             delay = 100ms;
         }
-        channel NoDelay extends ned.IdealChannel {}
+        channel NoDelay extends ned.IdealChannel
+        {
+        }
     submodules:
-        generator1: Poisson {}
-        adm1: FrontDrop {}
-        worker1: Worker {}
+        generator1: Poisson;
+        adm1: FrontDrop;
+        worker1: Worker;
     connections:
-      generator1.out++ --> Channel --> adm1.inGates++;
-      adm1.outGates++ <--> NoDelay <--> worker1.gate;
+        generator1.out++ --> Channel --> adm1.inGates++;
+        adm1.outGates++ <--> NoDelay <--> worker1.gate;
 }
 
 network laborki2_13
 {
     types:
-        channel Channel extends ned.DelayChannel {
+        channel Channel extends ned.DelayChannel
+        {
             delay = 100ms;
         }
-        channel NoDelay extends ned.IdealChannel {}
+        channel NoDelay extends ned.IdealChannel
+        {
+        }
     submodules:
-        generator1: Poisson {}
-        adm1: RED {}
-        worker1: Worker {}
+        generator1: Poisson;
+        adm1: RED;
+        worker1: Worker;
     connections:
-      generator1.out++ --> Channel --> adm1.inGates++;
-      adm1.outGates++ <--> NoDelay <--> worker1.gate;
+        generator1.out++ --> Channel --> adm1.inGates++;
+        adm1.outGates++ <--> NoDelay <--> worker1.gate;
 }
 
 network laborki2_14
 {
     types:
-        channel Channel extends ned.DelayChannel {
+        channel Channel extends ned.DelayChannel
+        {
             delay = 100ms;
         }
-        channel NoDelay extends ned.IdealChannel {}
+        channel NoDelay extends ned.IdealChannel
+        {
+        }
     submodules:
-        generator1: Poisson {}
-        adm1: WRED {}
-        worker1: Worker {}
+        generator1: Poisson;
+        adm1: WRED;
+        worker1: Worker;
     connections:
-      generator1.out++ --> Channel --> adm1.inGates++;
-      adm1.outGates++ <--> NoDelay <--> worker1.gate;
+        generator1.out++ --> Channel --> adm1.inGates++;
+        adm1.outGates++ <--> NoDelay <--> worker1.gate;
+}
+
+network laborki2_21
+{
+    types:
+        channel Channel extends ned.DelayChannel
+        {
+            delay = 100ms;
+        }
+    submodules:
+        generator1: Poisson;
+        leaky1: LeakyBucket;
+        omnom1: OmNomNom;
+    connections:
+        generator1.out++ --> Channel --> leaky1.in++;
+        leaky1.out++ --> Channel --> omnom1.in;
+
 }
 

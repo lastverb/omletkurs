@@ -32,6 +32,7 @@ OBJS = \
     $O/AdmissionControlModule.o \
     $O/BaseGenerator.o \
     $O/FrontDrop.o \
+    $O/LeakyBucket.o \
     $O/Mmpp.o \
     $O/OmNomNom.o \
     $O/OnOffGenerator.o \
@@ -137,6 +138,8 @@ $O/FrontDrop.o: FrontDrop.cc \
 	FrontDrop.h \
 	jobDone_m.h \
 	packet_m.h
+$O/LeakyBucket.o: LeakyBucket.cc \
+	LeakyBucket.h
 $O/Mmpp.o: Mmpp.cc \
 	BaseGenerator.h \
 	Mmpp.h \
