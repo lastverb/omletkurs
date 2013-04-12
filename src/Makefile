@@ -31,6 +31,7 @@ O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 OBJS = \
     $O/AdmissionControlModule.o \
     $O/BaseGenerator.o \
+    $O/FQ.o \
     $O/FrontDrop.o \
     $O/Mmpp.o \
     $O/OmNomNom.o \
@@ -134,6 +135,9 @@ $O/AdmissionControlModule.o: AdmissionControlModule.cc \
 	packet_m.h
 $O/BaseGenerator.o: BaseGenerator.cc \
 	BaseGenerator.h \
+	packet_m.h
+$O/FQ.o: FQ.cc \
+	FQ.h \
 	packet_m.h
 $O/FrontDrop.o: FrontDrop.cc \
 	AdmissionControlModule.h \

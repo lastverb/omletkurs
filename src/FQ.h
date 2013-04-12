@@ -13,8 +13,8 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-#ifndef WROUNDROBIN_H_
-#define WROUNDROBIN_H_
+#ifndef FQ_H_
+#define FQ_H_
 
 #include <omnetpp.h>
 #include "packet_m.h"
@@ -23,27 +23,28 @@
 #include <vector>
 using namespace std;
 
-class WRoundRobin: public cSimpleModule {
+class FQ: public cSimpleModule {
 private:
     simsignal_t messageSentSignal;
     int lastServedQueue;
     cMessage *processEvent;
     simtime_t quantumLength;
     double quantum;
+    double timeConstant;
     int lastSessionId;
     int actualQueue;
-    int actualServed;
-    vector <int> schedule;
+    vector <double> schedule;
     vector < vector <Packet> > queues;
 
 public:
-    WRoundRobin();
-    virtual ~WRoundRobin();
+    FQ();
+    virtual ~FQ();
     void initialize();
     virtual void handleMessage(cMessage *msg);
-    void computeWeights();
+    void computeParameters(double value);
+    int chooseQueue();
 };
 
-    Define_Module(WRoundRobin);
+    Define_Module(FQ);
 
-#endif /* WROUNDROBIN_H_ */
+#endif /* FQ_H_ */

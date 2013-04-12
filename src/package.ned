@@ -46,6 +46,15 @@ simple WFQ
         input in[];
 }
 
+simple FQ
+{
+    parameters:
+        double quantumLength = default(5.0);
+        @display("i=block/routing");
+    gates:
+        input in[];
+}
+
 simple BaseGenerator
 {
     parameters:
@@ -310,5 +319,27 @@ network laborki2_WFQ
       wykladniczy[0].out++ --> Channel --> wfq.in++;
       wykladniczy[1].out++ --> Channel --> wfq.in++;
       wykladniczy[2].out++ --> Channel --> wfq.in++;
+
+}
+
+network laborki2_FQ
+{
+    types:
+        channel Channel extends ned.DelayChannel {
+            delay = 100ms;
+        }
+    submodules:
+        fq: FQ {
+            parameters:
+                @display("i=,gold");
+        }
+        wykladniczy[3]: Wykladniczy{
+            
+        }
+        
+    connections:
+      wykladniczy[0].out++ --> Channel --> fq.in++;
+      wykladniczy[1].out++ --> Channel --> fq.in++;
+      wykladniczy[2].out++ --> Channel --> fq.in++;
 
 }
