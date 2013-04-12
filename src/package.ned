@@ -333,3 +333,27 @@ network laborki2_23
 
 }
 
+network laborki2_24
+{
+    types:
+        channel Channel extends ned.DelayChannel
+        {
+            delay = 100ms;
+        }
+    submodules:
+        generator1: Poisson;
+        token1: TokenBucket {
+            @display("i=block/bucket");
+        }
+        token2: TokenBucket {
+            @display("i=block/bucket");
+        }
+        omnom1: OmNomNom;
+    connections:
+        generator1.out++ --> Channel --> token1.in++;
+       token1.out --> Channel --> token2.in++;
+        token2.out --> Channel --> omnom1.in;
+
+}
+
+
