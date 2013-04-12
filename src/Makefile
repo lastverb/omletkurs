@@ -39,6 +39,7 @@ OBJS = \
     $O/Poisson.o \
     $O/RED.o \
     $O/TailDrop.o \
+    $O/TokenBucket.o \
     $O/Worker.o \
     $O/WRED.o \
     $O/Wykladniczy.o \
@@ -164,6 +165,8 @@ $O/TailDrop.o: TailDrop.cc \
 	TailDrop.h \
 	jobDone_m.h \
 	packet_m.h
+$O/TokenBucket.o: TokenBucket.cc \
+	TokenBucket.h
 $O/WRED.o: WRED.cc \
 	AdmissionControlModule.h \
 	WRED.h \

@@ -104,10 +104,29 @@ simple WRED extends AdmissionControlModule
 
 simple LeakyBucket
 {
+    parameters:
+        @class(LeakyBucket);
+        int queueSize = default(200);
+        int delay = default(0.5);
+
     gates:
         input in[];
-        output out[];
+        output out;
 }
+
+simple TokenBucket
+{
+    parameters:
+        @class(TokenBucket);
+        int queueSize = default(200);
+        int delay = default(10);
+        int tokensMax = default(2);
+
+    gates:
+        input in[];
+        output out;
+}
+
 
 network laborki1_1
 {
@@ -262,11 +281,55 @@ network laborki2_21
         }
     submodules:
         generator1: Poisson;
-        leaky1: LeakyBucket;
+        leaky1: LeakyBucket {
+            @display("i=block/bucket");
+        }
         omnom1: OmNomNom;
     connections:
         generator1.out++ --> Channel --> leaky1.in++;
-        leaky1.out++ --> Channel --> omnom1.in;
+        leaky1.out --> Channel --> omnom1.in;
+
+}
+
+network laborki2_22
+{
+    types:
+        channel Channel extends ned.DelayChannel
+        {
+            delay = 100ms;
+        }
+    submodules:
+        generator1: Poisson;
+        leaky1: LeakyBucket {
+            @display("i=block/bucket");
+        }
+        leaky2: LeakyBucket {
+            @display("i=block/bucket");
+        }
+        omnom1: OmNomNom;
+    connections:
+        generator1.out++ --> Channel --> leaky1.in++;
+        leaky1.out --> Channel --> leaky2.in++;
+        leaky2.out --> Channel --> omnom1.in;
+
+}
+
+network laborki2_23
+{
+    types:
+        channel Channel extends ned.DelayChannel
+        {
+            delay = 100ms;
+        }
+    submodules:
+        generator1: Poisson;
+        token1: TokenBucket {
+            @display("i=block/bucket");
+        }
+        omnom1: OmNomNom;
+    connections:
+        generator1.out++ --> Channel --> token1.in++;
+        token1.out --> Channel --> omnom1.in;
 
 }
 

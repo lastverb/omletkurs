@@ -13,32 +13,32 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-#ifndef LEAKYBUCKET_H_
-#define LEAKYBUCKET_H_
+#ifndef TOKENBUCKET_H_
+#define TOKENBUCKET_H_
 #include <csimplemodule.h>
 #include <string.h>
 #include <omnetpp.h>
 #include <algorithm>
 
-class LeakyBucket : public cSimpleModule
-{
-protected:
+
+class TokenBucket: public cSimpleModule {
+    protected:
     cMessage *msgInProgress;
-    cMessage *handleOver;
+    cMessage *fillTokens;
+    cMessage *sendMsg;
     cQueue queue;
     int delay;
     int queueSize;
+    int tokensCount;
+    int tokensMax;
+    bool beginCount;
 
 public:
-    LeakyBucket();
-    virtual ~LeakyBucket();
-
-  protected:
-    // The following redefined virtual function holds the algorithm.
+    TokenBucket();
+    virtual ~TokenBucket();
     virtual void initialize();
     virtual void handleMessage(cMessage *msg);
 };
+Define_Module(TokenBucket);
 
-// The module class needs to be registered with OMNeT++
-Define_Module(LeakyBucket);
-#endif /* LEAKYBUCKET_H_ */
+#endif /* TOKENBUCKET_H_ */

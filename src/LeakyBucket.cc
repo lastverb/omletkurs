@@ -16,36 +16,41 @@
 #include "LeakyBucket.h"
 
 LeakyBucket::LeakyBucket() {
-    // TODO Auto-generated constructor stub
 
 }
 
 LeakyBucket::~LeakyBucket() {
-    // TODO Auto-generated destructor stub
+
 }
 
 void LeakyBucket::initialize() {
-    delay = 2;
-    queueSize = 50;
+    handleOver = new cMessage("finished-handling");
 
+     delay = par("delay");
+     queueSize = par("queueSize");
 }
 
 void LeakyBucket::handleMessage(cMessage *msg) {
-    if (msg == endMsg) {
+    if (msg == handleOver) {
 
-        if (!queue.isEmpty()) {
-            handledMsg = queue.pop();
-            send(handledMsg, "out");
+        send(msgInProgress, "out");
+        if (queue.empty()) {
+            msgInProgress = NULL;
+        } else {
+            msgInProgress = (cMessage *) queue.pop();
+            scheduleAt(simTime() + delay, handleOver);
+        }
+    } else if (!msgInProgress) {
+
+        msgInProgress = msg;
+        scheduleAt(simTime() + delay, handleOver);
+    } else {
+        if (queue.getLength() > queueSize) {
+            delete msg;
+            return;
         }
 
-    }
-
-    if (queue.length() > queueSize) {
-        delete msg;
-    } else {
         queue.insert(msg);
-        scheduleAt(simTime() + delay, endMsg);
 
     }
-
 }
