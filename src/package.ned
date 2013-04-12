@@ -10,13 +10,59 @@ simple OmNomNom
         input in;
 }
 
+simple RoundRobin
+{
+    parameters:
+        double quantumLength = default(5.0);
+        @display("i=block/routing");
+    gates:
+        input in[];
+}
+
+simple RoundRobin2
+{
+    parameters:
+        double quantumLength = default(5.0);
+        @display("i=block/routing");
+    gates:
+        input in[];
+}
+
+simple WRoundRobin
+{
+    parameters:
+        double quantumLength = default(5.0);
+        @display("i=block/routing");
+    gates:
+        input in[];
+}
+
+simple WFQ
+{
+    parameters:
+        double quantumLength = default(5.0);
+        @display("i=block/routing");
+    gates:
+        input in[];
+}
+
+simple FQ
+{
+    parameters:
+        double quantumLength = default(5.0);
+        @display("i=block/routing");
+    gates:
+        input in[];
+}
+
 simple BaseGenerator
 {
     parameters:
-        int packetLengthMin = default(10);
-        int packetLengthMax = default(30);
+        int packetLengthMin = default(5);
+        int packetLengthMax = default(20);
         double sessionLength = default(10.0);
         int packetPriority = default(3);
+        double quantumLength = default(10.0);
         @statistic[timeChange](title="Wait Time"; source="send"; record=vector,stats; interpolationmode=none);
         @display("i=block/routing");
     gates:
@@ -333,6 +379,116 @@ network laborki2_23
 
 }
 
+
+network laborki2_RR
+{
+    types:
+        channel Channel extends ned.DelayChannel {
+            delay = 100ms;
+        }
+    submodules:
+        rr: RoundRobin {
+            parameters:
+                @display("i=,gold");
+        }
+        wykladniczy[3]: Wykladniczy{
+            
+        }
+        
+    connections:
+      wykladniczy[0].out++ --> Channel --> rr.in++;
+      wykladniczy[1].out++ --> Channel --> rr.in++;
+      wykladniczy[2].out++ --> Channel --> rr.in++;
+
+}
+
+network laborki2_RR2
+{
+    types:
+        channel Channel extends ned.DelayChannel {
+            delay = 100ms;
+        }
+    submodules:
+        rr: RoundRobin2 {
+            parameters:
+                @display("i=,gold");
+        }
+        wykladniczy[3]: Wykladniczy{
+            
+        }
+        
+    connections:
+      wykladniczy[0].out++ --> Channel --> rr.in++;
+      wykladniczy[1].out++ --> Channel --> rr.in++;
+      wykladniczy[2].out++ --> Channel --> rr.in++;
+
+}
+
+network laborki2_WRR
+{
+    types:
+        channel Channel extends ned.DelayChannel {
+            delay = 100ms;
+        }
+    submodules:
+        wrr: WRoundRobin {
+            parameters:
+                @display("i=,gold");
+        }
+        wykladniczy[3]: Wykladniczy{
+            
+        }
+        
+    connections:
+      wykladniczy[0].out++ --> Channel --> wrr.in++;
+      wykladniczy[1].out++ --> Channel --> wrr.in++;
+      wykladniczy[2].out++ --> Channel --> wrr.in++;
+
+}
+
+network laborki2_WFQ
+{
+    types:
+        channel Channel extends ned.DelayChannel {
+            delay = 100ms;
+        }
+    submodules:
+        wfq: WFQ {
+            parameters:
+                @display("i=,gold");
+        }
+        wykladniczy[3]: Wykladniczy{
+            
+        }
+        
+    connections:
+      wykladniczy[0].out++ --> Channel --> wfq.in++;
+      wykladniczy[1].out++ --> Channel --> wfq.in++;
+      wykladniczy[2].out++ --> Channel --> wfq.in++;
+
+}
+
+network laborki2_FQ
+{
+    types:
+        channel Channel extends ned.DelayChannel {
+            delay = 100ms;
+        }
+    submodules:
+        fq: FQ {
+            parameters:
+                @display("i=,gold");
+        }
+        wykladniczy[3]: Wykladniczy{
+            
+        }
+        
+    connections:
+      wykladniczy[0].out++ --> Channel --> fq.in++;
+      wykladniczy[1].out++ --> Channel --> fq.in++;
+      wykladniczy[2].out++ --> Channel --> fq.in++;
+
+}
 network laborki2_24
 {
     types:

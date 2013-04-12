@@ -13,12 +13,34 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-packet Packet {
-    int dst;
-    int src;
-    int sessionId;
-    int packetId;
-    int priorityClass;
-    double time;
-    unsigned char payload[];
-}
+#ifndef ROUNDROBIN_H_
+#define ROUNDROBIN_H_
+
+#include <omnetpp.h>
+#include "packet_m.h"
+#include <limits.h>
+#include <vector>
+using namespace std;
+
+class RoundRobin: public cSimpleModule {
+private:
+    simsignal_t messageSentSignal;
+    int lastServedQueue;
+    cMessage *processEvent;
+    simtime_t quantumLength;
+    double quantum;
+    int lastSessionId;
+    vector < vector <Packet> > queues;
+
+
+
+public:
+    RoundRobin();
+    virtual ~RoundRobin();
+    void initialize();
+    virtual void handleMessage(cMessage *msg);
+};
+
+Define_Module(RoundRobin);
+
+#endif /* ROUNDROBIN_H_ */

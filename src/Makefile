@@ -31,6 +31,7 @@ O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 OBJS = \
     $O/AdmissionControlModule.o \
     $O/BaseGenerator.o \
+    $O/FQ.o \
     $O/FrontDrop.o \
     $O/LeakyBucket.o \
     $O/Mmpp.o \
@@ -38,10 +39,14 @@ OBJS = \
     $O/OnOffGenerator.o \
     $O/Poisson.o \
     $O/RED.o \
+    $O/RoundRobin.o \
+    $O/RoundRobin2.o \
     $O/TailDrop.o \
     $O/TokenBucket.o \
+    $O/WFQ.o \
     $O/Worker.o \
     $O/WRED.o \
+    $O/WRoundRobin.o \
     $O/Wykladniczy.o \
     $O/jobDone_m.o \
     $O/packet_m.o
@@ -134,6 +139,9 @@ $O/AdmissionControlModule.o: AdmissionControlModule.cc \
 $O/BaseGenerator.o: BaseGenerator.cc \
 	BaseGenerator.h \
 	packet_m.h
+$O/FQ.o: FQ.cc \
+	FQ.h \
+	packet_m.h
 $O/FrontDrop.o: FrontDrop.cc \
 	AdmissionControlModule.h \
 	FrontDrop.h \
@@ -160,6 +168,12 @@ $O/RED.o: RED.cc \
 	RED.h \
 	jobDone_m.h \
 	packet_m.h
+$O/RoundRobin.o: RoundRobin.cc \
+	RoundRobin.h \
+	packet_m.h
+$O/RoundRobin2.o: RoundRobin2.cc \
+	RoundRobin2.h \
+	packet_m.h
 $O/TailDrop.o: TailDrop.cc \
 	AdmissionControlModule.h \
 	TailDrop.h \
@@ -167,10 +181,16 @@ $O/TailDrop.o: TailDrop.cc \
 	packet_m.h
 $O/TokenBucket.o: TokenBucket.cc \
 	TokenBucket.h
+$O/WFQ.o: WFQ.cc \
+	WFQ.h \
+	packet_m.h
 $O/WRED.o: WRED.cc \
 	AdmissionControlModule.h \
 	WRED.h \
 	jobDone_m.h \
+	packet_m.h
+$O/WRoundRobin.o: WRoundRobin.cc \
+	WRoundRobin.h \
 	packet_m.h
 $O/Worker.o: Worker.cc \
 	Worker.h \
