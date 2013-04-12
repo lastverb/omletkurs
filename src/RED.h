@@ -13,19 +13,23 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-#ifndef FRONTDROP_H_
-#define FRONTDROP_H_
+#ifndef RED_H_
+#define RED_H_
 
 #include "AdmissionControlModule.h"
 
-class FrontDrop: public AdmissionControlModule {
+class RED: public AdmissionControlModule {
+private:
+    unsigned int minT;
+    double multiplier;
+
 public:
-    FrontDrop();
-    virtual ~FrontDrop();
+    RED();
+    virtual ~RED();
+    virtual void initialize();
     virtual void newIncomePacket(Packet *p);
-    virtual void reject(Packet *p);
 };
 
-Define_Module(FrontDrop);
+Define_Module(RED);
 
-#endif /* FRONTDROP_H_ */
+#endif /* RED_H_ */

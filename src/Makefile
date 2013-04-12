@@ -33,15 +33,19 @@ OBJS = \
     $O/BaseGenerator.o \
     $O/FQ.o \
     $O/FrontDrop.o \
+    $O/LeakyBucket.o \
     $O/Mmpp.o \
     $O/OmNomNom.o \
     $O/OnOffGenerator.o \
     $O/Poisson.o \
+    $O/RED.o \
     $O/RoundRobin.o \
     $O/RoundRobin2.o \
     $O/TailDrop.o \
+    $O/TokenBucket.o \
     $O/WFQ.o \
     $O/Worker.o \
+    $O/WRED.o \
     $O/WRoundRobin.o \
     $O/Wykladniczy.o \
     $O/jobDone_m.o \
@@ -144,6 +148,8 @@ $O/FrontDrop.o: FrontDrop.cc \
 	FrontDrop.h \
 	jobDone_m.h \
 	packet_m.h
+$O/LeakyBucket.o: LeakyBucket.cc \
+	LeakyBucket.h
 $O/Mmpp.o: Mmpp.cc \
 	BaseGenerator.h \
 	Mmpp.h \
@@ -158,6 +164,11 @@ $O/Poisson.o: Poisson.cc \
 	BaseGenerator.h \
 	Poisson.h \
 	packet_m.h
+$O/RED.o: RED.cc \
+	AdmissionControlModule.h \
+	RED.h \
+	jobDone_m.h \
+	packet_m.h
 $O/RoundRobin.o: RoundRobin.cc \
 	RoundRobin.h \
 	packet_m.h
@@ -169,8 +180,15 @@ $O/TailDrop.o: TailDrop.cc \
 	TailDrop.h \
 	jobDone_m.h \
 	packet_m.h
+$O/TokenBucket.o: TokenBucket.cc \
+	TokenBucket.h
 $O/WFQ.o: WFQ.cc \
 	WFQ.h \
+	packet_m.h
+$O/WRED.o: WRED.cc \
+	AdmissionControlModule.h \
+	WRED.h \
+	jobDone_m.h \
 	packet_m.h
 $O/WRoundRobin.o: WRoundRobin.cc \
 	WRoundRobin.h \

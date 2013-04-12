@@ -19,13 +19,9 @@
 #include "AdmissionControlModule.h"
 
 class TailDrop: public AdmissionControlModule {
-private:
-    unsigned int maxQueueSize;
-
 public:
     TailDrop();
     virtual ~TailDrop();
-    virtual void initialize();
     virtual void newIncomePacket(Packet *p);
 };
 

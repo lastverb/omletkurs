@@ -1,6 +1,5 @@
 # Partial Tkenv config file -- see $HOME/.tkenvrc as well
-inspector "laborki2_WRR" "laborki2_WRR" "2" "565x341+-122+122:normal"
-inspector "laborki2_WFQ" "laborki2_WFQ" "2" "565x341+25+25:normal"
 inspector "laborki1" "laborki1" "2" "565x342+25+25:normal"
+inspector "laborki2_WFQ" "laborki2_WFQ" "2" "565x341+25+25:normal"
 inspector "laborki2_FQ" "laborki2_FQ" "2" "565x341+50+50:normal"
 

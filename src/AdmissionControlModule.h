@@ -29,6 +29,7 @@ private:
 
 protected:
     unsigned int queueSize;
+    unsigned int maxQueueSize;
     vector<Packet *> q;
 
 public:

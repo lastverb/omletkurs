@@ -13,39 +13,42 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-#include "FrontDrop.h"
+#include "RED.h"
 
-FrontDrop::FrontDrop() {
+RED::RED() {
     // TODO Auto-generated constructor stub
 
 }
 
-FrontDrop::~FrontDrop() {
+RED::~RED() {
     // TODO Auto-generated destructor stub
 }
 
-void FrontDrop::newIncomePacket(Packet *p)
+void RED::initialize()
 {
-    if(queueSize + p->getPayloadArraySize() > maxQueueSize)
+    AdmissionControlModule::initialize();
+    minT = par("minT");
+    multiplier = double(par("multiplier"));
+}
+
+void RED::newIncomePacket(Packet *p)
+{
+    unsigned int sizeT = queueSize + p->getPayloadArraySize();
+    if(sizeT > maxQueueSize)
     {
         reject(p);
+    }
+    else if(sizeT > minT)
+    {
+        double k = multiplier * (sizeT - minT)/double((maxQueueSize - minT));
+        if(intuniform(0,INT_MAX) / double(INT_MAX) > k)
+            accept(p);
+        else
+            reject(p);
     }
     else
     {
         accept(p);
     }
 }
-
-void FrontDrop::reject(Packet *p)
-{
-    if(!q.empty())
-    {
-        Packet *t = q.front();
-        q.erase(q.begin());
-        delete t;
-    }
-    accept(p);
-}
-
-
 

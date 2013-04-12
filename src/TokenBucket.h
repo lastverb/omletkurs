@@ -13,19 +13,32 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-#ifndef FRONTDROP_H_
-#define FRONTDROP_H_
+#ifndef TOKENBUCKET_H_
+#define TOKENBUCKET_H_
+#include <csimplemodule.h>
+#include <string.h>
+#include <omnetpp.h>
+#include <algorithm>
 
-#include "AdmissionControlModule.h"
 
-class FrontDrop: public AdmissionControlModule {
+class TokenBucket: public cSimpleModule {
+    protected:
+    cMessage *msgInProgress;
+    cMessage *fillTokens;
+    cMessage *sendMsg;
+    cQueue queue;
+    int delay;
+    int queueSize;
+    int tokensCount;
+    int tokensMax;
+    bool beginCount;
+
 public:
-    FrontDrop();
-    virtual ~FrontDrop();
-    virtual void newIncomePacket(Packet *p);
-    virtual void reject(Packet *p);
+    TokenBucket();
+    virtual ~TokenBucket();
+    virtual void initialize();
+    virtual void handleMessage(cMessage *msg);
 };
+Define_Module(TokenBucket);
 
-Define_Module(FrontDrop);
-
-#endif /* FRONTDROP_H_ */
+#endif /* TOKENBUCKET_H_ */

@@ -28,6 +28,7 @@ void AdmissionControlModule::initialize()
 {
     readyToSend = false;
     queueSize = 0;
+    maxQueueSize = par("maxQueueSize");
 }
 
 void AdmissionControlModule::handleMessage(cMessage *msg)

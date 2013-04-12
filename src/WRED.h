@@ -13,19 +13,23 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-#ifndef FRONTDROP_H_
-#define FRONTDROP_H_
+#ifndef WRED_H_
+#define WRED_H_
 
 #include "AdmissionControlModule.h"
 
-class FrontDrop: public AdmissionControlModule {
+class WRED: public AdmissionControlModule {
+private:
+    unsigned int* minT;
+    double* multiplier;
+
 public:
-    FrontDrop();
-    virtual ~FrontDrop();
+    WRED();
+    virtual ~WRED();
+    virtual void initialize();
     virtual void newIncomePacket(Packet *p);
-    virtual void reject(Packet *p);
 };
 
-Define_Module(FrontDrop);
+Define_Module(WRED);
 
-#endif /* FRONTDROP_H_ */
+#endif /* WRED_H_ */

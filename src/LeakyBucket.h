@@ -13,19 +13,32 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-#ifndef FRONTDROP_H_
-#define FRONTDROP_H_
+#ifndef LEAKYBUCKET_H_
+#define LEAKYBUCKET_H_
+#include <csimplemodule.h>
+#include <string.h>
+#include <omnetpp.h>
+#include <algorithm>
 
-#include "AdmissionControlModule.h"
+class LeakyBucket : public cSimpleModule
+{
+protected:
+    cMessage *msgInProgress;
+    cMessage *handleOver;
+    cQueue queue;
+    int delay;
+    int queueSize;
 
-class FrontDrop: public AdmissionControlModule {
 public:
-    FrontDrop();
-    virtual ~FrontDrop();
-    virtual void newIncomePacket(Packet *p);
-    virtual void reject(Packet *p);
+    LeakyBucket();
+    virtual ~LeakyBucket();
+
+  protected:
+    // The following redefined virtual function holds the algorithm.
+    virtual void initialize();
+    virtual void handleMessage(cMessage *msg);
 };
 
-Define_Module(FrontDrop);
-
-#endif /* FRONTDROP_H_ */
+// The module class needs to be registered with OMNeT++
+Define_Module(LeakyBucket);
+#endif /* LEAKYBUCKET_H_ */
