@@ -6,6 +6,7 @@ simple OmNomNom
 {
     parameters:
         @display("i=block/routing");
+        @statistic[waitTime](title="Wait Time"; source="packet"; record=vector,stats; interpolationmode=none);
     gates:
         input in[];
 }
