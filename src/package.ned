@@ -189,57 +189,39 @@ network generator_poisson
         poisson1.out <--> NoDelay <--> omNomNom1.in++;
 }
 
-//network generator_poisson
-//{
-//    types:
-//        channel Channel extends ned.DelayChannel
-//        {
-//            delay = 100ms;
-//        }
-//    submodules:
-//        omNomNom1: OmNomNom {
-//            parameters:
-//                @display("i=,gold");
-//        }
-//        wykladniczy1: Wykladniczy;
-//    connections:
-//        wykladniczy1.out++ --> Channel --> omNomNom1.in;
-//}
-//
-//network laborki1_3A
-//{
-//    types:
-//        channel Channel extends ned.DelayChannel
-//        {
-//            delay = 100ms;
-//        }
-//    submodules:
-//        omNomNom1: OmNomNom {
-//            parameters:
-//                @display("i=,gold");
-//        }
-//        onOff1: OnOffGenerator;
-//    connections:
-//        onOff1.out++ --> Channel --> omNomNom1.in;
-//}
-//
-//network laborki1_4
-//{
-//    types:
-//        channel Channel extends ned.DelayChannel
-//        {
-//            delay = 100ms;
-//        }
-//    submodules:
-//        omNomNom1: OmNomNom {
-//            parameters:
-//                @display("i=,gold");
-//        }
-//        mmpp1: Mmpp;
-//    connections:
-//        mmpp1.out++ --> Channel --> omNomNom1.in;
-//}
-//
+network generator_wykladniczy
+{
+    types:
+        channel NoDelay extends ned.IdealChannel{}
+    submodules:
+        omNomNom1: OmNomNom;
+        wykladniczy1: Wykladniczy;
+    connections:
+        wykladniczy1.out <--> NoDelay <--> omNomNom1.in++;
+}
+
+network generator_onoff
+{
+    types:
+        channel NoDelay extends ned.IdealChannel{}
+    submodules:
+        omNomNom1: OmNomNom;
+        onOff1: OnOffGenerator;
+    connections:
+        onOff1.out <--> NoDelay <--> omNomNom1.in++;
+}
+
+network generator_mmpp
+{
+    types:
+        channel NoDelay extends ned.IdealChannel{}
+    submodules:
+        omNomNom1: OmNomNom;
+        mmpp1: Mmpp;
+    connections:
+        mmpp1.out <--> NoDelay <--> omNomNom1.in++;
+}
+
 //network laborki2_11
 //{
 //    types:
