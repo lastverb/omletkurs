@@ -1,4 +1,4 @@
 # Partial Tkenv config file -- see $HOME/.tkenvrc as well
-inspector "laborki2_FQ" "laborki2_FQ" "2" "565x341+628+173:normal"
 inspector "laborki1" "laborki1" "2" "565x342+25+25:normal"
+inspector "laborki2_FQ" "laborki2_FQ" "2" "565x341+628+173:normal"
 

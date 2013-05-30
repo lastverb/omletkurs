@@ -33,55 +33,21 @@ void TokenBucket::initialize() {
     beginCount = true;
 
     tokensCount = tokensMax = par("tokensMax");
+    request();
 }
 
 void TokenBucket::handleMessage(cMessage *msg) {
-
-    /*   if (msg == fillTokens) {
-     tokensCount = tokensMax;
-     scheduleAt(simTime() + delay, fillTokens);
-     // scheduleAt(simTime(), sendMsg);
-     } else if (!msgInProgress) {
-
-     if (beginCount) {
-     scheduleAt(simTime() + delay, fillTokens);
-     beginCount = false;
-     }
-     msgInProgress = msg;
-     //  scheduleAt(simTime(), sendMsg);
-     } else if (tokensCount > 0) {
-
-     //if (tokensCount > 0) {
-     send(msgInProgress, "out");
-     tokensCount--;
-     if (queue.isEmpty()) {
-     msgInProgress = NULL;
-     } else {
-     msgInProgress = (cMessage *) queue.pop();
-     // scheduleAt(simTime(), sendMsg);
-     }
-
-     //  }
-
-     } else {
-     if (queue.getLength() > queueSize) {
-     delete msg;
-     return;
-     }
-     queue.insert(msg);
-     }
-     */
-
     if (msg == fillTokens) {
         tokensCount = tokensMax;
         scheduleAt(simTime() + delay, fillTokens);
         if(msgInProgress) {scheduleAt(simTime(), sendMsg);}
     } else if (msg == sendMsg) {
         if (tokensCount > 0) {
-            send(msgInProgress, "out");
+            send(msgInProgress, "out$o");
             tokensCount--;
             if (queue.empty()) {
                 msgInProgress = NULL;
+                request();
             } else {
                 msgInProgress = (cMessage *) queue.pop();
                if(tokensCount > 0){
@@ -91,7 +57,6 @@ void TokenBucket::handleMessage(cMessage *msg) {
             }
         }
     } else if (!msgInProgress) {
-
         if(beginCount){
             scheduleAt(simTime() + delay, fillTokens);
             beginCount = false;
@@ -105,7 +70,11 @@ void TokenBucket::handleMessage(cMessage *msg) {
         }
 
         queue.insert(msg);
-
     }
+}
 
+void TokenBucket::request()
+{
+    JobDone* msg = new JobDone("jobDone");
+    send(msg, "in$o");
 }

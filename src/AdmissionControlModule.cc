@@ -67,7 +67,7 @@ void AdmissionControlModule::checkAndSend()
 {
     if(!readyToSend || q.empty()) return;
     readyToSend = false;
-    send(q.front(),"outGates$o",0);
+    send(q.front(),"outGate$o");
     queueSize -= q.front()->getPayloadArraySize();
     q.erase(q.begin());
 }

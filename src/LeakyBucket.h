@@ -19,11 +19,11 @@
 #include <string.h>
 #include <omnetpp.h>
 #include <algorithm>
+#include "jobDone_m.h"
 
 class LeakyBucket : public cSimpleModule
 {
 protected:
-    cMessage *msgInProgress;
     cMessage *handleOver;
     cQueue queue;
     int delay;
@@ -32,6 +32,7 @@ protected:
 public:
     LeakyBucket();
     virtual ~LeakyBucket();
+    void request();
 
   protected:
     // The following redefined virtual function holds the algorithm.

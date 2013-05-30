@@ -24,33 +24,39 @@ LeakyBucket::~LeakyBucket() {
 }
 
 void LeakyBucket::initialize() {
-    handleOver = new cMessage("finished-handling");
+     handleOver = new cMessage("finished-handling");
 
      delay = par("delay");
      queueSize = par("queueSize");
+     request();
 }
 
 void LeakyBucket::handleMessage(cMessage *msg) {
-    if (msg == handleOver) {
 
-        send(msgInProgress, "out");
+    if(strcmp(msg->getName(),"jobDone") == 0) {
+        delete msg;
+    } else if (msg == handleOver) {
+        send((cMessage *) queue.pop(), "out$o");
         if (queue.empty()) {
-            msgInProgress = NULL;
+            request();
         } else {
-            msgInProgress = (cMessage *) queue.pop();
             scheduleAt(simTime() + delay, handleOver);
         }
-    } else if (!msgInProgress) {
 
-        msgInProgress = msg;
-        scheduleAt(simTime() + delay, handleOver);
     } else {
         if (queue.getLength() > queueSize) {
             delete msg;
             return;
         }
-
+        if (queue.empty()) {
+            scheduleAt(simTime() + delay, handleOver);
+        }
         queue.insert(msg);
-
     }
+}
+
+void LeakyBucket::request()
+{
+    JobDone* msg = new JobDone("jobDone");
+    send(msg, "in$o");
 }

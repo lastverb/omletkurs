@@ -19,7 +19,7 @@
 #include <string.h>
 #include <omnetpp.h>
 #include <algorithm>
-
+#include "jobDone_m.h"
 
 class TokenBucket: public cSimpleModule {
     protected:
@@ -38,6 +38,7 @@ public:
     virtual ~TokenBucket();
     virtual void initialize();
     virtual void handleMessage(cMessage *msg);
+    void request();
 };
 Define_Module(TokenBucket);
 
