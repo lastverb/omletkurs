@@ -58,7 +58,7 @@ void WRoundRobin::handleMessage(cMessage *msg) {
             Packet *p = queues[lastServedQueue].front();
             double time = (double(p->getPayloadArraySize())*timeConstant);
             queues[lastServedQueue].erase(queues[lastServedQueue].begin());
-            queueSize[actualQueue] -= p->getPayloadArraySize();
+            queueSize[lastServedQueue] -= p->getPayloadArraySize();
             send(p, "out$o");
             actualServed++;
             if(actualServed>=schedule[lastServedQueue]){
