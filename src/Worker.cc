@@ -43,8 +43,8 @@ void Worker::handleMessage(cMessage *msg)
         Packet *p = check_and_cast<Packet *>(msg);
         double t = getJobTime(p);
         scheduleAt(simTime() + t, doneMsg);
-        p->setTime(p->getTime() + t);
-        send(p,"out");
+        p->setTime(p->getTime() - t);
+        send(p,"out$o");
     }
 }
 

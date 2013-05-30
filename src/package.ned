@@ -107,7 +107,7 @@ simple Worker
         double jobTimePerByte = default(0.1);
     gates:
         inout gate;
-        output out;
+        inout out;
 }
 
 simple AdmissionControlModule
@@ -222,81 +222,89 @@ network generator_mmpp
         mmpp1.out <--> NoDelay <--> omNomNom1.in++;
 }
 
-//network laborki2_11
-//{
-//    types:
-//        channel Channel extends ned.DelayChannel
-//        {
-//            delay = 100ms;
-//        }
-//        channel NoDelay extends ned.IdealChannel
-//        {
-//        }
-//    submodules:
-//        generator1: Poisson;
-//        adm1: TailDrop;
-//        worker1: Worker;
-//    connections:
-//        generator1.out++ --> Channel --> adm1.inGates++;
-//        adm1.outGate <--> NoDelay <--> worker1.gate;
-//}
-//
-//network laborki2_12
-//{
-//    types:
-//        channel Channel extends ned.DelayChannel
-//        {
-//            delay = 100ms;
-//        }
-//        channel NoDelay extends ned.IdealChannel
-//        {
-//        }
-//    submodules:
-//        generator1: Poisson;
-//        adm1: FrontDrop;
-//        worker1: Worker;
-//    connections:
-//        generator1.out++ --> Channel --> adm1.inGates++;
-//        adm1.outGate <--> NoDelay <--> worker1.gate;
-//}
-//
-//network laborki2_13
-//{
-//    types:
-//        channel Channel extends ned.DelayChannel
-//        {
-//            delay = 100ms;
-//        }
-//        channel NoDelay extends ned.IdealChannel
-//        {
-//        }
-//    submodules:
-//        generator1: Poisson;
-//        adm1: RED;
-//        worker1: Worker;
-//    connections:
-//        generator1.out++ --> Channel --> adm1.inGates++;
-//        adm1.outGate <--> NoDelay <--> worker1.gate;
-//}
-//
-//network laborki2_14
-//{
-//    types:
-//        channel Channel extends ned.DelayChannel
-//        {
-//            delay = 100ms;
-//        }
-//        channel NoDelay extends ned.IdealChannel
-//        {
-//        }
-//    submodules:
-//        generator1: Poisson;
-//        adm1: WRED;
-//        worker1: Worker;
-//    connections:
-//        generator1.out++ --> Channel --> adm1.inGates++;
-//        adm1.outGate <--> NoDelay <--> worker1.gate;
-//}
+network ac_TailDrop
+{
+    types:
+        channel Channel extends ned.DelayChannel
+        {
+            delay = 100ms;
+        }
+        channel NoDelay extends ned.IdealChannel{}
+    submodules:
+        generator1: Poisson;
+        adm1: TailDrop;
+        worker1: Worker;
+        timer: OmNomNom;
+        rejecter: OmNomNom;
+    connections:
+        generator1.out <--> Channel <--> adm1.inGates++;
+        adm1.outGate <--> NoDelay <--> worker1.gate;
+        worker1.out <--> NoDelay <--> timer.in++;
+        adm1.rejectGate <--> NoDelay <--> rejecter.in++;
+}
+
+network ac_FrontDrop
+{
+    types:
+        channel Channel extends ned.DelayChannel
+        {
+            delay = 100ms;
+        }
+        channel NoDelay extends ned.IdealChannel{}
+    submodules:
+        generator1: Poisson;
+        adm1: FrontDrop;
+        worker1: Worker;
+        timer: OmNomNom;
+        rejecter: OmNomNom;
+    connections:
+        generator1.out <--> Channel <--> adm1.inGates++;
+        adm1.outGate <--> NoDelay <--> worker1.gate;
+        worker1.out <--> NoDelay <--> timer.in++;
+        adm1.rejectGate <--> NoDelay <--> rejecter.in++;
+}
+
+network ac_RED
+{
+    types:
+        channel Channel extends ned.DelayChannel
+        {
+            delay = 100ms;
+        }
+        channel NoDelay extends ned.IdealChannel{}
+    submodules:
+        generator1: Poisson;
+        adm1: RED;
+        worker1: Worker;
+        timer: OmNomNom;
+        rejecter: OmNomNom;
+    connections:
+        generator1.out <--> Channel <--> adm1.inGates++;
+        adm1.outGate <--> NoDelay <--> worker1.gate;
+        worker1.out <--> NoDelay <--> timer.in++;
+        adm1.rejectGate <--> NoDelay <--> rejecter.in++;
+}
+
+network ac_WRED
+{
+    types:
+        channel Channel extends ned.DelayChannel
+        {
+            delay = 100ms;
+        }
+        channel NoDelay extends ned.IdealChannel{}
+    submodules:
+        generator1: Poisson;
+        adm1: WRED;
+        worker1: Worker;
+        timer: OmNomNom;
+        rejecter: OmNomNom;
+    connections:
+        generator1.out <--> Channel <--> adm1.inGates++;
+        adm1.outGate <--> NoDelay <--> worker1.gate;
+        worker1.out <--> NoDelay <--> timer.in++;
+        adm1.rejectGate <--> NoDelay <--> rejecter.in++;
+}
 
 //network laborki2_21
 //{
