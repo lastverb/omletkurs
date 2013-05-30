@@ -37,7 +37,9 @@ void TokenBucket::initialize() {
 }
 
 void TokenBucket::handleMessage(cMessage *msg) {
-    if (msg == fillTokens) {
+    if(strcmp(msg->getName(),"jobDone") == 0) {
+        delete msg;
+    } else if (msg == fillTokens) {
         tokensCount = tokensMax;
         scheduleAt(simTime() + delay, fillTokens);
         if(msgInProgress) {scheduleAt(simTime(), sendMsg);}

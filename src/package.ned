@@ -306,89 +306,87 @@ network ac_WRED
         adm1.rejectGate <--> NoDelay <--> rejecter.in++;
 }
 
-//network laborki2_21
-//{
-//    types:
-//        channel Channel extends ned.DelayChannel
-//        {
-//            delay = 100ms;
-//        }
-//    submodules:
-//        generator1: Poisson;
-//        leaky1: LeakyBucket {
-//            @display("i=block/bucket");
-//        }
-//        omnom1: OmNomNom;
-//    connections:
-//        generator1.out++ --> Channel --> leaky1.in++;
-//        leaky1.out --> Channel --> omnom1.in;
-//
-//}
-//
-//network laborki2_22
-//{
-//    types:
-//        channel Channel extends ned.DelayChannel
-//        {
-//            delay = 100ms;
-//        }
-//    submodules:
-//        generator1: Poisson;
-//        leaky1: LeakyBucket {
-//            @display("i=block/bucket");
-//        }
-//        leaky2: LeakyBucket {
-//            @display("i=block/bucket");
-//        }
-//        omnom1: OmNomNom;
-//    connections:
-//        generator1.out++ --> Channel --> leaky1.in++;
-//        leaky1.out --> Channel --> leaky2.in++;
-//        leaky2.out --> Channel --> omnom1.in;
-//
-//}
-//
-//network laborki2_23
-//{
-//    types:
-//        channel Channel extends ned.DelayChannel
-//        {
-//            delay = 100ms;
-//        }
-//    submodules:
-//        generator1: Poisson;
-//        token1: TokenBucket {
-//            @display("i=block/bucket");
-//        }
-//        omnom1: OmNomNom;
-//    connections:
-//        generator1.out++ --> Channel --> token1.in++;
-//        token1.out --> Channel --> omnom1.in;
-//
-//}
-//
-//network laborki2_24
-//{
-//    types:
-//        channel Channel extends ned.DelayChannel
-//        {
-//            delay = 100ms;
-//        }
-//    submodules:
-//        generator1: Poisson;
-//        token1: TokenBucket {
-//            @display("i=block/bucket");
-//        }
-//        token2: TokenBucket {
-//            @display("i=block/bucket");
-//        }
-//        omnom1: OmNomNom;
-//    connections:
-//        generator1.out++ --> Channel --> token1.in++;
-//       token1.out --> Channel --> token2.in++;
-//        token2.out --> Channel --> omnom1.in;
-//
-//}
+network profile_leaky
+{
+    types:
+        channel Channel extends ned.DelayChannel
+        {
+            delay = 100ms;
+        }
+        channel NoDelay extends ned.IdealChannel{}
+    submodules:
+        generator1: Poisson;
+        bucket1: LeakyBucket;
+        timer: OmNomNom;
+        rejecter: OmNomNom;
+    connections:
+        generator1.out <--> Channel <--> bucket1.in;
+        bucket1.out <--> NoDelay <--> timer.in++;
+        bucket1.rejectGate <--> NoDelay <--> rejecter.in++;
+}
+
+network profile_leaky2
+{
+    types:
+        channel Channel extends ned.DelayChannel
+        {
+            delay = 100ms;
+        }
+        channel NoDelay extends ned.IdealChannel{}
+    submodules:
+        generator1: Poisson;
+        bucket1: LeakyBucket;
+        bucket2: LeakyBucket;
+        timer: OmNomNom;
+        rejecter: OmNomNom;
+    connections:
+        generator1.out <--> Channel <--> bucket1.in;
+        bucket1.out <--> NoDelay <--> bucket2.in;
+        bucket2.out <--> NoDelay <--> timer.in++;
+        bucket1.rejectGate <--> NoDelay <--> rejecter.in++;
+        bucket2.rejectGate <--> NoDelay <--> rejecter.in++;
+}
+
+network profile_token
+{
+    types:
+        channel Channel extends ned.DelayChannel
+        {
+            delay = 100ms;
+        }
+        channel NoDelay extends ned.IdealChannel{}
+    submodules:
+        generator1: Poisson;
+        bucket1: TokenBucket;
+        timer: OmNomNom;
+        rejecter: OmNomNom;
+    connections:
+        generator1.out <--> Channel <--> bucket1.in;
+        bucket1.out <--> NoDelay <--> timer.in++;
+        bucket1.rejectGate <--> NoDelay <--> rejecter.in++;
+}
+
+network profile_token2
+{
+    types:
+        channel Channel extends ned.DelayChannel
+        {
+            delay = 100ms;
+        }
+        channel NoDelay extends ned.IdealChannel{}
+    submodules:
+        generator1: Poisson;
+        bucket1: TokenBucket;
+        bucket2: TokenBucket;
+        timer: OmNomNom;
+        rejecter: OmNomNom;
+    connections:
+        generator1.out <--> Channel <--> bucket1.in;
+        bucket1.out <--> NoDelay <--> bucket2.in;
+        bucket2.out <--> NoDelay <--> timer.in++;
+        bucket1.rejectGate <--> NoDelay <--> rejecter.in++;
+        bucket2.rejectGate <--> NoDelay <--> rejecter.in++;
+}
 
 //network laborki2_RR2
 //{
