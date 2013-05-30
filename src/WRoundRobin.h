@@ -30,6 +30,7 @@ private:
     cMessage *processEvent;
     simtime_t quantumLength;
     double quantum;
+    double timeConstant;
     int lastSessionId;
     int actualQueue;
     int actualServed;

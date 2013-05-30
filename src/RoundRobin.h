@@ -29,6 +29,7 @@ private:
     cMessage *processEvent;
     simtime_t quantumLength;
     double quantum;
+    double timeConstant;
     int lastSessionId;
     vector < vector <Packet> > queues;
 

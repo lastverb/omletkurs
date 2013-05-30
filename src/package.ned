@@ -25,7 +25,7 @@ simple RoundRobin2
         double quantumLength = default(5.0);
         @display("i=block/routing");
     gates:
-        input in[];
+        inout in[];
 }
 
 simple WRoundRobin
@@ -34,7 +34,7 @@ simple WRoundRobin
         double quantumLength = default(5.0);
         @display("i=block/routing");
     gates:
-        input in[];
+        inout in[];
 }
 
 simple WFQ
@@ -43,7 +43,7 @@ simple WFQ
         double quantumLength = default(5.0);
         @display("i=block/routing");
     gates:
-        input in[];
+        inout in[];
 }
 
 simple FQ
@@ -52,7 +52,7 @@ simple FQ
         double quantumLength = default(5.0);
         @display("i=block/routing");
     gates:
-        input in[];
+        inout in[];
 }
 
 simple BaseGenerator
@@ -402,93 +402,93 @@ network laborki2_RR
 
 }
 
-network laborki2_RR2
-{
-    types:
-        channel Channel extends ned.DelayChannel {
-            delay = 100ms;
-        }
-    submodules:
-        rr: RoundRobin2 {
-            parameters:
-                @display("i=,gold");
-        }
-        wykladniczy[3]: Wykladniczy{
-            
-        }
-        
-    connections:
-      wykladniczy[0].out++ --> Channel --> rr.in++;
-      wykladniczy[1].out++ --> Channel --> rr.in++;
-      wykladniczy[2].out++ --> Channel --> rr.in++;
-
-}
-
-network laborki2_WRR
-{
-    types:
-        channel Channel extends ned.DelayChannel {
-            delay = 100ms;
-        }
-    submodules:
-        wrr: WRoundRobin {
-            parameters:
-                @display("i=,gold");
-        }
-        wykladniczy[3]: Wykladniczy{
-            
-        }
-        
-    connections:
-      wykladniczy[0].out++ --> Channel --> wrr.in++;
-      wykladniczy[1].out++ --> Channel --> wrr.in++;
-      wykladniczy[2].out++ --> Channel --> wrr.in++;
-
-}
-
-network laborki2_WFQ
-{
-    types:
-        channel Channel extends ned.DelayChannel {
-            delay = 100ms;
-        }
-    submodules:
-        wfq: WFQ {
-            parameters:
-                @display("i=,gold");
-        }
-        wykladniczy[3]: Wykladniczy{
-            
-        }
-        
-    connections:
-      wykladniczy[0].out++ --> Channel --> wfq.in++;
-      wykladniczy[1].out++ --> Channel --> wfq.in++;
-      wykladniczy[2].out++ --> Channel --> wfq.in++;
-
-}
-
-network laborki2_FQ
-{
-    types:
-        channel Channel extends ned.DelayChannel {
-            delay = 100ms;
-        }
-    submodules:
-        fq: FQ {
-            parameters:
-                @display("i=,gold");
-        }
-        wykladniczy[3]: Wykladniczy{
-            
-        }
-        
-    connections:
-      wykladniczy[0].out++ --> Channel --> fq.in++;
-      wykladniczy[1].out++ --> Channel --> fq.in++;
-      wykladniczy[2].out++ --> Channel --> fq.in++;
-
-}
+//network laborki2_RR2
+//{
+//    types:
+//        channel Channel extends ned.DelayChannel {
+//            delay = 100ms;
+//        }
+//    submodules:
+//        rr: RoundRobin2 {
+//            parameters:
+//                @display("i=,gold");
+//        }
+//        wykladniczy[3]: Wykladniczy{
+//            
+//        }
+//        
+//    connections:
+//      wykladniczy[0].out++ --> Channel --> rr.in++;
+//      wykladniczy[1].out++ --> Channel --> rr.in++;
+//      wykladniczy[2].out++ --> Channel --> rr.in++;
+//
+//}
+//
+//network laborki2_WRR
+//{
+//    types:
+//        channel Channel extends ned.DelayChannel {
+//            delay = 100ms;
+//        }
+//    submodules:
+//        wrr: WRoundRobin {
+//            parameters:
+//                @display("i=,gold");
+//        }
+//        wykladniczy[3]: Wykladniczy{
+//            
+//        }
+//        
+//    connections:
+//      wykladniczy[0].out++ --> Channel --> wrr.in++;
+//      wykladniczy[1].out++ --> Channel --> wrr.in++;
+//      wykladniczy[2].out++ --> Channel --> wrr.in++;
+//
+//}
+//
+//network laborki2_WFQ
+//{
+//    types:
+//        channel Channel extends ned.DelayChannel {
+//            delay = 100ms;
+//        }
+//    submodules:
+//        wfq: WFQ {
+//            parameters:
+//                @display("i=,gold");
+//        }
+//        wykladniczy[3]: Wykladniczy{
+//            
+//        }
+//        
+//    connections:
+//      wykladniczy[0].out++ --> Channel --> wfq.in++;
+//      wykladniczy[1].out++ --> Channel --> wfq.in++;
+//      wykladniczy[2].out++ --> Channel --> wfq.in++;
+//
+//}
+//
+//network laborki2_FQ
+//{
+//    types:
+//        channel Channel extends ned.DelayChannel {
+//            delay = 100ms;
+//        }
+//    submodules:
+//        fq: FQ {
+//            parameters:
+//                @display("i=,gold");
+//        }
+//        wykladniczy[3]: Wykladniczy{
+//            
+//        }
+//        
+//    connections:
+//      wykladniczy[0].out++ --> Channel --> fq.in++;
+//      wykladniczy[1].out++ --> Channel --> fq.in++;
+//      wykladniczy[2].out++ --> Channel --> fq.in++;
+//
+//}
 network laborki2_24
 {
     types:
@@ -511,5 +511,26 @@ network laborki2_24
         token2.out --> Channel --> omnom1.in;
 
 }
+//testowy
+//network laborki2_FQ
+//{
+//    types:
+//        channel Channel extends ned.DelayChannel {
+//            delay = 100ms;
+//        }
+//    submodules:
+//        fq: FQ {
+//            parameters:
+//                @display("i=,gold");
+//        }
+//        adm1[3]: RED;
+//        
+//        
+//    connections:
+//      adm1[0].outGates++ <--> Channel <--> fq.in++;
+//      adm1[1].outGates++ <--> Channel <--> fq.in++;
+//      adm1[2].outGates++ <--> Channel <--> fq.in++;
+//
+//}
 
 

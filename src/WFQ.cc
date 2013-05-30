@@ -49,6 +49,9 @@ void WFQ::handleMessage(cMessage *msg) {
     if(msg!=processEvent){
         Packet *packet = check_and_cast<Packet *>(msg);
         EV << "przyszedl " << packet->getPacketId() << " \n";
+        //w time w pakiecie mozna zapisac czas siedzenia w kolejce
+        //double t = simTime();
+        //packet->setTime(t);
         queues[packet->getSrc()].push_back(*packet);
         EV << "trafil do " << packet->getSrc() << " \n";
     }else{
@@ -61,6 +64,10 @@ void WFQ::handleMessage(cMessage *msg) {
             schedule[actualQueue]+=double(queues[actualQueue].begin()->getPayloadArraySize());
             double c=schedule[chooseQueue()];
             computeWeights(c);
+
+            // czas siedzenia w kolejce do konca obsugi, wypadaloby go jakos do statystyk dac
+            //double t = simTime();
+            //t = t - queues[actualQueue].begin()->getTime();
 
             EV << "obsluzony i usuniety " << queues[actualQueue].begin()->getPacketId() <<" dl kolejki "<<queues[actualQueue].size() << " \n";
             EV<<"mial "<< queues[actualQueue].begin()->getPayloadArraySize() << " \n";

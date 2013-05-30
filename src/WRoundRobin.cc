@@ -27,7 +27,7 @@ WRoundRobin::~WRoundRobin() {
 void WRoundRobin::initialize() {
     messageSentSignal = registerSignal("send");
     processEvent = new cMessage("process");
-
+    timeConstant=1.2;
     actualServed=0;
     lastServedQueue = 0;
     quantumLength = double(par("quantumLength"));
@@ -45,19 +45,28 @@ void WRoundRobin::handleMessage(cMessage *msg) {
 
     if(msg!=processEvent){
         Packet *packet = check_and_cast<Packet *>(msg);
-        EV << "przyszedl " << packet->getTime() << " \n";
+        //EV << "przyszedl " << packet->getTime() << " \n";
+
+        //w time w pakiecie mozna zapisac czas siedzenia w kolejce
+        //double t = simTime();
+        //packet->setTime(t);
+
         queues[packet->getSrc()].push_back(*packet);
-        EV << "trafil do " << packet->getSrc() << " \n";
+        //EV << "trafil do " << packet->getSrc() << " \n";
     }else{
         if(queues[lastServedQueue].size()>0){
             double time=0.0;
             if(actualServed<schedule[lastServedQueue]){
-
-                    double k=ceil(queues[lastServedQueue].begin()->getTime()/quantum);
+                    double k=ceil((double(queues[lastServedQueue].begin()->getPayloadArraySize())*timeConstant)/quantum);
+                    //double k=ceil(queues[lastServedQueue].begin()->getTime()/quantum);
                     time+=k*quantum;
 
+                    // czas siedzenia w kolejce do konca obsugi, wypadaloby go jakos do statystyk dac
+                    //double t = simTime();
+                    //t = t - queues[lastServedQueue].begin()->getTime();
+
                     EV << "obsluzony i usuniety " << queues[lastServedQueue].begin()->getPacketId() <<" dl kolejki "<<queues[lastServedQueue].size() << " \n";
-                    EV<<"mial "<< queues[lastServedQueue].begin()->getTime() << " \n";
+                    //EV<<"mial "<< queues[lastServedQueue].begin()->getTime() << " \n";
                     bubble("obsluzony i usuniety ");
                     queues[lastServedQueue].erase(queues[lastServedQueue].begin());
                     EV <<" dl kolejki po"<<queues[lastServedQueue].size() <<"czas czekania "<< time << " \n";
