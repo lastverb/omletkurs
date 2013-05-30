@@ -26,54 +26,41 @@ WFQ::~WFQ() {
 
 
 void WFQ::initialize() {
-    messageSentSignal = registerSignal("send");
     processEvent = new cMessage("process");
 
     lastServedQueue = 0;
     actualQueue=0;
-    timeConstant=1.2;
-    quantumLength = double(par("quantumLength"));
-    quantum= double(par("quantumLength"));
+    timeConstant = double(par("timeConstant"));
     int n = int(par("ilGeneratorow"));
     queues.resize(n);
     schedule.resize(n);
     multipliers.resize(n);
     generateWeights();
 
-
-    scheduleAt(simTime() + quantumLength, processEvent);
+    scheduleAt(simTime() + 1, processEvent);
 }
 
 void WFQ::handleMessage(cMessage *msg) {
 
     if(msg!=processEvent){
         Packet *packet = check_and_cast<Packet *>(msg);
-//        EV << "przyszedl " << packet->getPacketId() << " \n";
         queues[packet->getSrc()].push_back(packet);
-//        EV << "trafil do " << packet->getSrc() << " \n";
     }else{
-        double time=0.0;
         actualQueue=chooseQueue();
         if(queues[actualQueue].size()>0){
             Packet *p = queues[lastServedQueue].front();
-            double k=ceil((double(p->getPayloadArraySize())*timeConstant)/quantum);
-            time+=k*quantum;
+            double time=(double(p->getPayloadArraySize())*timeConstant);
 
             schedule[actualQueue]+=double(p->getPayloadArraySize());
             double c=schedule[chooseQueue()];
             computeWeights(c);
 
-//            EV << "obsluzony i usuniety " << queues[actualQueue].begin()->getPacketId() <<" dl kolejki "<<queues[actualQueue].size() << " \n";
-//            EV<<"mial "<< queues[actualQueue].begin()->getPayloadArraySize() << " \n";
             queues[actualQueue].erase(queues[actualQueue].begin());
             send(p, "out");
-//            EV <<" dl kolejki po"<<queues[actualQueue].size() <<"czas czekania "<< time << " \n";
-
-//            EV << "actualQueue "<< actualQueue;
             scheduleAt(simTime() + time, processEvent);
         }else{
 
-            scheduleAt(simTime() + 1, processEvent);
+            scheduleAt(simTime() + 0.1, processEvent);
         }
 
     }
@@ -84,7 +71,6 @@ void WFQ::generateWeights(){
     for(int i=0;i<schedule.size();i++){
         schedule[i]=0.0;
         multipliers[i]=double(intuniform(1, schedule.size()*2))/double(schedule.size()*2);
-//        EV << "multipliers "<< multipliers[i];
     }
 
 }
@@ -95,7 +81,6 @@ void WFQ::computeWeights(double value){
         if(schedule[i]<0.0){
             schedule[i]=0.0;
         }
-//        EV << "computeWeights "<< schedule[i];
     }
 
 }

@@ -25,11 +25,8 @@ using namespace std;
 
 class RoundRobin2: public cSimpleModule {
 private:
-    simsignal_t messageSentSignal;
     int lastServedQueue;
     cMessage *processEvent;
-    simtime_t quantumLength;
-    double quantum;
     double timeConstant;
     int lastSessionId;
     int actualQueue;

@@ -27,6 +27,7 @@ private:
     double jobTimeMin;
     double jobTimePerByte;
     cMessage *doneMsg;
+    cQueue queue;
 
 public:
     Worker();

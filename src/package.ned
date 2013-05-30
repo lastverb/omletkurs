@@ -14,7 +14,7 @@ simple OmNomNom
 simple RoundRobin2
 {
     parameters:
-        double quantumLength = default(5.0);
+        double timeConstant = default(0.8);
         int ilGeneratorow = default(3);
         @display("i=block/routing");
     gates:
@@ -25,7 +25,7 @@ simple RoundRobin2
 simple WRoundRobin
 {
     parameters:
-        double quantumLength = default(5.0);
+        double timeConstant = default(0.8);
         int ilGeneratorow = default(3);
         @display("i=block/routing");
     gates:
@@ -36,7 +36,7 @@ simple WRoundRobin
 simple WFQ
 {
     parameters:
-        double quantumLength = default(5.0);
+        double timeConstant = default(0.8);
         int ilGeneratorow = default(3);
         @display("i=block/routing");
     gates:
@@ -47,7 +47,7 @@ simple WFQ
 simple FQ
 {
     parameters:
-        double quantumLength = default(5.0);
+        double timeConstant = default(0.8);
         int ilGeneratorow = default(3);
         @display("i=block/routing");
     gates:
@@ -107,6 +107,7 @@ simple Worker
         double jobTimePerByte = default(0.1);
     gates:
         inout gate;
+        output out;
 }
 
 simple AdmissionControlModule

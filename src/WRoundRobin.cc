@@ -25,57 +25,37 @@ WRoundRobin::~WRoundRobin() {
 }
 
 void WRoundRobin::initialize() {
-    messageSentSignal = registerSignal("send");
     processEvent = new cMessage("process");
-    timeConstant=1.2;
+    timeConstant = double(par("timeConstant"));
     actualServed=0;
     lastServedQueue = 0;
-    quantumLength = double(par("quantumLength"));
-    quantum= double(par("quantumLength"));
     int n = int(par("ilGeneratorow"));
     queues.resize(n);
     schedule.resize(n);
     computeWeights();
 
-
-    scheduleAt(simTime() + quantumLength, processEvent);
+    scheduleAt(simTime() + 1, processEvent);
 }
 
 void WRoundRobin::handleMessage(cMessage *msg) {
 
     if(msg!=processEvent){
         Packet *packet = check_and_cast<Packet *>(msg);
-        //EV << "przyszedl " << packet->getTime() << " \n";
-
         queues[packet->getSrc()].push_back(packet);
-        //EV << "trafil do " << packet->getSrc() << " \n";
     }else{
         if(queues[lastServedQueue].size()>0){
-            double time=0.0;
-            if(actualServed<schedule[lastServedQueue]){
-                Packet *p = queues[lastServedQueue].front();
-                    double k=ceil((double(p->getPayloadArraySize())*timeConstant)/quantum);
-                    //double k=ceil(queues[lastServedQueue].begin()->getTime()/quantum);
-                    time+=k*quantum;
-
-//                    EV << "obsluzony i usuniety " << queues[lastServedQueue].begin()->getPacketId() <<" dl kolejki "<<queues[lastServedQueue].size() << " \n";
-                    //EV<<"mial "<< queues[lastServedQueue].begin()->getTime() << " \n";
-                    queues[lastServedQueue].erase(queues[lastServedQueue].begin());
-                    send(p, "out");
-//                    EV <<" dl kolejki po"<<queues[lastServedQueue].size() <<"czas czekania "<< time << " \n";
-                    actualServed++;
-//                    EV << "obsl w kolejce "<< actualServed;
-                    if(actualServed>=schedule[lastServedQueue]){
-                        actualServed=0;
-                        lastServedQueue++;
-                        if(lastServedQueue>=queues.size()){
-                            lastServedQueue=0;
-                        }
-                    }
-
+            Packet *p = queues[lastServedQueue].front();
+            double time = (double(p->getPayloadArraySize())*timeConstant);
+            queues[lastServedQueue].erase(queues[lastServedQueue].begin());
+            send(p, "out");
+            actualServed++;
+            if(actualServed>=schedule[lastServedQueue]){
+                actualServed=0;
+                lastServedQueue++;
+                if(lastServedQueue>=queues.size()){
+                    lastServedQueue=0;
+                }
             }
-
-//            EV << "lastServedQueue "<< lastServedQueue;
             scheduleAt(simTime() + time, processEvent);
         }else{
             lastServedQueue++;
@@ -83,11 +63,9 @@ void WRoundRobin::handleMessage(cMessage *msg) {
                 lastServedQueue=0;
             }
             actualServed=0;
-            scheduleAt(simTime() + 1, processEvent);
+            scheduleAt(simTime() + 0.1, processEvent);
         }
-
     }
-
 }
 
 void WRoundRobin::computeWeights(){

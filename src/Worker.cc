@@ -40,8 +40,11 @@ void Worker::handleMessage(cMessage *msg)
     }
     else
     {
-        scheduleAt(simTime() + getJobTime( check_and_cast<Packet *>(msg) ), doneMsg);
-        delete msg;
+        Packet *p = check_and_cast<Packet *>(msg);
+        double t = getJobTime(p);
+        scheduleAt(simTime() + t, doneMsg);
+        p->setTime(p->getTime() + t);
+        send(p,"out");
     }
 }
 

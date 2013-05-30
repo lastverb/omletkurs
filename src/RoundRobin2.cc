@@ -25,57 +25,39 @@ RoundRobin2::~RoundRobin2() {
 }
 
 void RoundRobin2::initialize() {
-    messageSentSignal = registerSignal("send");
     processEvent = new cMessage("process");
-    timeConstant=1.2;
+    timeConstant = double(par("timeConstant"));
     lastServedQueue = 0;
-    quantumLength = double(par("quantumLength"));
-    quantum= double(par("quantumLength"));
     int n = int(par("ilGeneratorow"));
     queues.resize(n);
     schedule.resize(n);
 
-
-    scheduleAt(simTime() + quantumLength, processEvent);
+    scheduleAt(simTime() + 1, processEvent);
 }
 
 void RoundRobin2::handleMessage(cMessage *msg) {
-
     if(msg!=processEvent){
         Packet *packet = check_and_cast<Packet *>(msg);
-//        EV << "przyszedl " << packet->getPacketId() << " \n";
-
         queues[packet->getSrc()].push_back(packet);
-//        EV << "trafil do " << packet->getSrc() << " \n";
     }else{
         if(queues[lastServedQueue].size()>0){
-            double time=0.0;
-                if(queues[lastServedQueue].size()>0){
-                    Packet *p = queues[lastServedQueue].front();
-                    double k=ceil((double(p->getPayloadArraySize())*timeConstant)/quantum);
-                    time+=k*quantum;
+            Packet *p = queues[lastServedQueue].front();
+            double time=(double(p->getPayloadArraySize())*timeConstant);
 
-//                    EV << "obsluzony i usuniety " << queues[lastServedQueue].begin()->getPacketId() <<" dl kolejki "<<queues[lastServedQueue].size() << " \n";
-//                    EV<<"mial "<< double(queues[lastServedQueue].begin()->getPayloadArraySize()*timeConstant) << " \n";
-                    //EV<<"mial "<< queues[lastServedQueue].begin()->getTime() << " \n";
-
-                    queues[lastServedQueue].erase(queues[lastServedQueue].begin());
-                    send(p, "out");
-//                    EV <<" dl kolejki po"<<queues[lastServedQueue].size() << " \n";
-                }
+            queues[lastServedQueue].erase(queues[lastServedQueue].begin());
+            send(p, "out");
 
             lastServedQueue++;
             if(lastServedQueue>=queues.size()){
                 lastServedQueue=0;
             }
-//            EV << "lastServedQueue "<< lastServedQueue;
             scheduleAt(simTime() + time, processEvent);
         }else{
             lastServedQueue++;
             if(lastServedQueue>=queues.size()){
                 lastServedQueue=0;
             }
-            scheduleAt(simTime() + 1, processEvent);
+            scheduleAt(simTime() + 0.1, processEvent);
         }
 
     }
