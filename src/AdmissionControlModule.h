@@ -41,7 +41,6 @@ public:
     virtual void accept(Packet *p);
     virtual void reject(Packet *p);
     void checkAndSend();
-    void setWaitingStartTime(Packet *p);
 };
 
 Define_Module(AdmissionControlModule);

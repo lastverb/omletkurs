@@ -66,6 +66,7 @@ Packet *BaseGenerator::generatePacket(){
     packet->setDst(dest);
     packet->setPacketId(id);
     packet->setPriorityClass(int(par("packetPriority")));
+    packet->setTime(simTime());
 
     int length = intuniform(int(par("packetLengthMin")), int(par("packetLengthMax")));
     packet->setPayloadArraySize(length);
