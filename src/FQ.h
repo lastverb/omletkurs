@@ -34,7 +34,7 @@ private:
     int lastSessionId;
     int actualQueue;
     vector <double> schedule;
-    vector < vector <Packet> > queues;
+    vector < vector <Packet*> > queues;
 
 public:
     FQ();

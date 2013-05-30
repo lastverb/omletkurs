@@ -35,7 +35,7 @@ private:
     int actualQueue;
     vector <double> schedule;
     vector <double> multipliers;
-    vector < vector <Packet> > queues;
+    vector < vector <Packet*> > queues;
 
 public:
     WFQ();

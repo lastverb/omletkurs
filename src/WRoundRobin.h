@@ -35,7 +35,7 @@ private:
     int actualQueue;
     int actualServed;
     vector <int> schedule;
-    vector < vector <Packet> > queues;
+    vector < vector <Packet*> > queues;
 
 public:
     WRoundRobin();

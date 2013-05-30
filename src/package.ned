@@ -19,6 +19,7 @@ simple RoundRobin2
         @display("i=block/routing");
     gates:
         inout in[];
+        output out;
 }
 
 simple WRoundRobin
@@ -29,6 +30,7 @@ simple WRoundRobin
         @display("i=block/routing");
     gates:
         inout in[];
+        output out;
 }
 
 simple WFQ
@@ -39,6 +41,7 @@ simple WFQ
         @display("i=block/routing");
     gates:
         inout in[];
+        output out;
 }
 
 simple FQ
@@ -49,6 +52,7 @@ simple FQ
         @display("i=block/routing");
     gates:
         inout in[];
+        output out;
 }
 
 simple BaseGenerator
@@ -527,12 +531,14 @@ network laborki_test1
         bucket1: LeakyBucket;
         scheduler1: RoundRobin2;
         rejecter: OmNomNom;
+        timer: OmNomNom;
     connections:
         generator1.out <--> Channel <--> adm1.inGates++;
         adm1.outGate <--> NoDelay <--> bucket1.in;
         bucket1.out <--> NoDelay <--> scheduler1.in++;
         adm1.rejectGate --> NoDelay --> rejecter.in++;
         bucket1.rejectGate --> NoDelay --> rejecter.in++;
+        scheduler1.out --> NoDelay --> timer.in++;
 }
 
 network laborki_test2
@@ -551,10 +557,12 @@ network laborki_test2
         bucket1: TokenBucket;
         scheduler1: RoundRobin2;
         rejecter: OmNomNom;
+        timer: OmNomNom;
     connections:
         generator1.out <--> Channel <--> adm1.inGates++;
         adm1.outGate <--> NoDelay <--> bucket1.in;
         bucket1.out <--> NoDelay <--> scheduler1.in++;
         adm1.rejectGate --> NoDelay --> rejecter.in++;
         bucket1.rejectGate --> NoDelay --> rejecter.in++;
+        scheduler1.out --> NoDelay --> timer.in++;
 }

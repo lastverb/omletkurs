@@ -31,7 +31,6 @@ void RoundRobin2::initialize() {
     lastServedQueue = 0;
     quantumLength = double(par("quantumLength"));
     quantum= double(par("quantumLength"));
-    //int n = gateSize("in");
     int n = int(par("ilGeneratorow"));
     queues.resize(n);
     schedule.resize(n);
@@ -44,36 +43,32 @@ void RoundRobin2::handleMessage(cMessage *msg) {
 
     if(msg!=processEvent){
         Packet *packet = check_and_cast<Packet *>(msg);
-        EV << "przyszedl " << packet->getPacketId() << " \n";
+//        EV << "przyszedl " << packet->getPacketId() << " \n";
 
-        //w time w pakiecie mozna zapisac czas siedzenia w kolejce
-        //double t = simTime();
-        //packet->setTime(t);
-        queues[packet->getSrc()].push_back(*packet);
-        EV << "trafil do " << packet->getSrc() << " \n";
+        queues[packet->getSrc()].push_back(packet);
+//        EV << "trafil do " << packet->getSrc() << " \n";
     }else{
         if(queues[lastServedQueue].size()>0){
             double time=0.0;
                 if(queues[lastServedQueue].size()>0){
-                    double k=ceil((double(queues[lastServedQueue].begin()->getPayloadArraySize())*timeConstant)/quantum);
-                    //double k=ceil(queues[lastServedQueue].begin()->getTime()/quantum);
+                    Packet *p = queues[lastServedQueue].front();
+                    double k=ceil((double(p->getPayloadArraySize())*timeConstant)/quantum);
                     time+=k*quantum;
-                    // czas siedzenia w kolejce do konca obsugi, wypadaloby go jakos do statystyk dac
-                    //double t = simTime();
-                    //t = t - queues[lastServedQueue].begin()->getTime();
-                    EV << "obsluzony i usuniety " << queues[lastServedQueue].begin()->getPacketId() <<" dl kolejki "<<queues[lastServedQueue].size() << " \n";
-                    EV<<"mial "<< double(queues[lastServedQueue].begin()->getPayloadArraySize()*timeConstant) << " \n";
+
+//                    EV << "obsluzony i usuniety " << queues[lastServedQueue].begin()->getPacketId() <<" dl kolejki "<<queues[lastServedQueue].size() << " \n";
+//                    EV<<"mial "<< double(queues[lastServedQueue].begin()->getPayloadArraySize()*timeConstant) << " \n";
                     //EV<<"mial "<< queues[lastServedQueue].begin()->getTime() << " \n";
-                    bubble("obsluzony i usuniety ");
+
                     queues[lastServedQueue].erase(queues[lastServedQueue].begin());
-                    EV <<" dl kolejki po"<<queues[lastServedQueue].size() << " \n";
+                    send(p, "out");
+//                    EV <<" dl kolejki po"<<queues[lastServedQueue].size() << " \n";
                 }
 
             lastServedQueue++;
             if(lastServedQueue>=queues.size()){
                 lastServedQueue=0;
             }
-            EV << "lastServedQueue "<< lastServedQueue;
+//            EV << "lastServedQueue "<< lastServedQueue;
             scheduleAt(simTime() + time, processEvent);
         }else{
             lastServedQueue++;

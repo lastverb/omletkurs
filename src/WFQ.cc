@@ -34,7 +34,6 @@ void WFQ::initialize() {
     timeConstant=1.2;
     quantumLength = double(par("quantumLength"));
     quantum= double(par("quantumLength"));
-    //int n = gateSize("in");
     int n = int(par("ilGeneratorow"));
     queues.resize(n);
     schedule.resize(n);
@@ -49,34 +48,28 @@ void WFQ::handleMessage(cMessage *msg) {
 
     if(msg!=processEvent){
         Packet *packet = check_and_cast<Packet *>(msg);
-        EV << "przyszedl " << packet->getPacketId() << " \n";
-        //w time w pakiecie mozna zapisac czas siedzenia w kolejce
-        //double t = simTime();
-        //packet->setTime(t);
-        queues[packet->getSrc()].push_back(*packet);
-        EV << "trafil do " << packet->getSrc() << " \n";
+//        EV << "przyszedl " << packet->getPacketId() << " \n";
+        queues[packet->getSrc()].push_back(packet);
+//        EV << "trafil do " << packet->getSrc() << " \n";
     }else{
         double time=0.0;
         actualQueue=chooseQueue();
         if(queues[actualQueue].size()>0){
-            double k=ceil((double(queues[actualQueue].begin()->getPayloadArraySize())*timeConstant)/quantum);
+            Packet *p = queues[lastServedQueue].front();
+            double k=ceil((double(p->getPayloadArraySize())*timeConstant)/quantum);
             time+=k*quantum;
 
-            schedule[actualQueue]+=double(queues[actualQueue].begin()->getPayloadArraySize());
+            schedule[actualQueue]+=double(p->getPayloadArraySize());
             double c=schedule[chooseQueue()];
             computeWeights(c);
 
-            // czas siedzenia w kolejce do konca obsugi, wypadaloby go jakos do statystyk dac
-            //double t = simTime();
-            //t = t - queues[actualQueue].begin()->getTime();
-
-            EV << "obsluzony i usuniety " << queues[actualQueue].begin()->getPacketId() <<" dl kolejki "<<queues[actualQueue].size() << " \n";
-            EV<<"mial "<< queues[actualQueue].begin()->getPayloadArraySize() << " \n";
-            bubble("obsluzony i usuniety ");
+//            EV << "obsluzony i usuniety " << queues[actualQueue].begin()->getPacketId() <<" dl kolejki "<<queues[actualQueue].size() << " \n";
+//            EV<<"mial "<< queues[actualQueue].begin()->getPayloadArraySize() << " \n";
             queues[actualQueue].erase(queues[actualQueue].begin());
-            EV <<" dl kolejki po"<<queues[actualQueue].size() <<"czas czekania "<< time << " \n";
+            send(p, "out");
+//            EV <<" dl kolejki po"<<queues[actualQueue].size() <<"czas czekania "<< time << " \n";
 
-            EV << "actualQueue "<< actualQueue;
+//            EV << "actualQueue "<< actualQueue;
             scheduleAt(simTime() + time, processEvent);
         }else{
 
@@ -91,7 +84,7 @@ void WFQ::generateWeights(){
     for(int i=0;i<schedule.size();i++){
         schedule[i]=0.0;
         multipliers[i]=double(intuniform(1, schedule.size()*2))/double(schedule.size()*2);
-        EV << "multipliers "<< multipliers[i];
+//        EV << "multipliers "<< multipliers[i];
     }
 
 }
@@ -102,7 +95,7 @@ void WFQ::computeWeights(double value){
         if(schedule[i]<0.0){
             schedule[i]=0.0;
         }
-        EV << "computeWeights "<< schedule[i];
+//        EV << "computeWeights "<< schedule[i];
     }
 
 }
