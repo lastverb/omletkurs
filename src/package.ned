@@ -14,6 +14,7 @@ simple RoundRobin2
 {
     parameters:
         double quantumLength = default(5.0);
+        int ilGeneratorow = default(3);
         @display("i=block/routing");
     gates:
         inout in[];
@@ -23,6 +24,7 @@ simple WRoundRobin
 {
     parameters:
         double quantumLength = default(5.0);
+        int ilGeneratorow = default(3);
         @display("i=block/routing");
     gates:
         inout in[];
@@ -32,6 +34,7 @@ simple WFQ
 {
     parameters:
         double quantumLength = default(5.0);
+        int ilGeneratorow = default(3);
         @display("i=block/routing");
     gates:
         inout in[];
@@ -41,6 +44,7 @@ simple FQ
 {
     parameters:
         double quantumLength = default(5.0);
+        int ilGeneratorow = default(3);
         @display("i=block/routing");
     gates:
         inout in[];
@@ -51,7 +55,7 @@ simple BaseGenerator
     parameters:
         int packetLengthMin = default(5);
         int packetLengthMax = default(20);
-        double sessionLength = default(10.0);
+        double sessionLength = default(10.0);        
         int packetPriority = default(3);
         double quantumLength = default(10.0);
         @statistic[timeChange](title="Wait Time"; source="send"; record=vector,stats; interpolationmode=none);

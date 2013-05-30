@@ -34,7 +34,8 @@ void FQ::initialize() {
     timeConstant=1.2;
     quantumLength = double(par("quantumLength"));
     quantum= double(par("quantumLength"));
-    int n = gateSize("in");
+    //int n = gateSize("in");
+    int n = int(par("ilGeneratorow"));
     queues.resize(n);
     schedule.resize(n);
     for(int i=0;i<schedule.size();i++){

@@ -31,7 +31,8 @@ void RoundRobin2::initialize() {
     lastServedQueue = 0;
     quantumLength = double(par("quantumLength"));
     quantum= double(par("quantumLength"));
-    int n = gateSize("in");
+    //int n = gateSize("in");
+    int n = int(par("ilGeneratorow"));
     queues.resize(n);
     schedule.resize(n);
 

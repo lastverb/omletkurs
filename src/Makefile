@@ -14,7 +14,7 @@ USERIF_LIBS = $(ALL_ENV_LIBS) # that is, $(TKENV_LIBS) $(CMDENV_LIBS)
 #USERIF_LIBS = $(TKENV_LIBS)
 
 # C++ include paths (with -I)
-INCLUDE_PATH = -I.
+INCLUDE_PATH = -I. -Iresults
 
 # Additional object and library files to link with
 EXTRA_OBJS =
@@ -123,12 +123,13 @@ clean:
 	-rm -rf $O
 	-rm -f omletkurs omletkurs.exe libomletkurs.so libomletkurs.a libomletkurs.dll libomletkurs.dylib
 	-rm -f ./*_m.cc ./*_m.h
+	-rm -f results/*_m.cc results/*_m.h
 
 cleanall: clean
 	-rm -rf $(PROJECT_OUTPUT_DIR)
 
 depend:
-	$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc
+	$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc results/*.cc
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 $O/AdmissionControlModule.o: AdmissionControlModule.cc \
