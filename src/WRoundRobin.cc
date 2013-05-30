@@ -34,6 +34,12 @@ void WRoundRobin::initialize() {
     schedule.resize(n);
     computeWeights();
 
+    maxQueueSize = par("maxQueueSize");
+    queueSize.resize(n);
+    for(int i=0;i<queueSize.size();i++){
+        queueSize[i]=0;
+    }
+
     scheduleAt(simTime() + 1, processEvent);
 }
 
@@ -41,12 +47,18 @@ void WRoundRobin::handleMessage(cMessage *msg) {
 
     if(msg!=processEvent){
         Packet *packet = check_and_cast<Packet *>(msg);
-        queues[packet->getSrc()].push_back(packet);
+        if(queueSize[packet->getSrc()] + packet->getPayloadArraySize() > maxQueueSize){
+            send(packet,"rejectGate$o");
+        }else{
+            queues[packet->getSrc()].push_back(packet);
+            queueSize[packet->getSrc()] += packet->getPayloadArraySize();
+        }
     }else{
         if(queues[lastServedQueue].size()>0){
             Packet *p = queues[lastServedQueue].front();
             double time = (double(p->getPayloadArraySize())*timeConstant);
             queues[lastServedQueue].erase(queues[lastServedQueue].begin());
+            queueSize[actualQueue] -= p->getPayloadArraySize();
             send(p, "out$o");
             actualServed++;
             if(actualServed>=schedule[lastServedQueue]){

@@ -33,6 +33,8 @@ private:
     int actualServed;
     vector <int> schedule;
     vector < vector <Packet*> > queues;
+    vector < unsigned int> queueSize;
+    unsigned int maxQueueSize;
 
 public:
     WRoundRobin();

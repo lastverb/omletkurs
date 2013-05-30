@@ -38,13 +38,24 @@ void FQ::initialize() {
         schedule[i]=0.0;
     }
 
+    maxQueueSize = par("maxQueueSize");
+    queueSize.resize(n);
+    for(int i=0;i<queueSize.size();i++){
+        queueSize[i]=0;
+    }
+
     scheduleAt(simTime() + 1, processEvent);
 }
 
 void FQ::handleMessage(cMessage *msg) {
     if(msg!=processEvent){
         Packet *packet = check_and_cast<Packet *>(msg);
-        queues[packet->getSrc()].push_back(packet);
+        if(queueSize[packet->getSrc()] + packet->getPayloadArraySize() > maxQueueSize){
+            send(packet,"rejectGate$o");
+        }else{
+            queues[packet->getSrc()].push_back(packet);
+            queueSize[packet->getSrc()] += packet->getPayloadArraySize();
+        }
     }else{
         actualQueue=chooseQueue();
         if(queues[actualQueue].size()>0){
@@ -56,6 +67,7 @@ void FQ::handleMessage(cMessage *msg) {
             computeParameters(c);
 
             queues[actualQueue].erase(queues[actualQueue].begin());
+            queueSize[actualQueue] -= p->getPayloadArraySize();
             send(p,"out$o");
             scheduleAt(simTime() + time, processEvent);
         }else{
