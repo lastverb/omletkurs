@@ -10,15 +10,6 @@ simple OmNomNom
         input in;
 }
 
-simple RoundRobin
-{
-    parameters:
-        double quantumLength = default(5.0);
-        @display("i=block/routing");
-    gates:
-        input in[];
-}
-
 simple RoundRobin2
 {
     parameters:
@@ -376,29 +367,6 @@ network laborki2_23
     connections:
         generator1.out++ --> Channel --> token1.in++;
         token1.out --> Channel --> omnom1.in;
-
-}
-
-
-network laborki2_RR
-{
-    types:
-        channel Channel extends ned.DelayChannel {
-            delay = 100ms;
-        }
-    submodules:
-        rr: RoundRobin {
-            parameters:
-                @display("i=,gold");
-        }
-        wykladniczy[3]: Wykladniczy{
-            
-        }
-        
-    connections:
-      wykladniczy[0].out++ --> Channel --> rr.in++;
-      wykladniczy[1].out++ --> Channel --> rr.in++;
-      wykladniczy[2].out++ --> Channel --> rr.in++;
 
 }
 
