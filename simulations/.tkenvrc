@@ -1,7 +1,7 @@
 # Partial Tkenv config file -- see $HOME/.tkenvrc as well
-inspector "generator_wykladniczy" "generator_wykladniczy" "2" "565x341+75+75:normal"
 inspector "laborki1" "laborki1" "2" "565x342+25+25:normal"
-inspector "generator_mmpp" "generator_mmpp" "2" "565x341+25+25:normal"
-inspector "laborki2_FQ" "laborki2_FQ" "2" "565x341+628+173:normal"
+inspector "generator_wykladniczy" "generator_wykladniczy" "2" "565x341+75+75:normal"
 inspector "generator_onoff" "generator_onoff" "2" "565x341+55+136:normal"
+inspector "laborki2_FQ" "laborki2_FQ" "2" "565x341+628+173:normal"
+inspector "generator_mmpp" "generator_mmpp" "2" "565x341+25+25:normal"
 
