@@ -45,7 +45,7 @@ void LeakyBucket::handleMessage(cMessage *msg) {
 
     } else {
         if (queue.getLength() > queueSize) {
-            send(msg,"rejectGate");
+            send(msg,"rejectGate$o");
             return;
         }
         if (queue.empty()) {

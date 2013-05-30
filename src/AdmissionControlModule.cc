@@ -61,7 +61,7 @@ void AdmissionControlModule::accept(Packet *p)
 
 void AdmissionControlModule::reject(Packet *p)
 {
-    send(p,"rejectGate");
+    send(p,"rejectGate$o");
 }
 
 void AdmissionControlModule::checkAndSend()

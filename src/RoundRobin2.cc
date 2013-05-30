@@ -45,7 +45,7 @@ void RoundRobin2::handleMessage(cMessage *msg) {
             double time=(double(p->getPayloadArraySize())*timeConstant);
 
             queues[lastServedQueue].erase(queues[lastServedQueue].begin());
-            send(p, "out");
+            send(p, "out$o");
 
             lastServedQueue++;
             if(lastServedQueue>=queues.size()){

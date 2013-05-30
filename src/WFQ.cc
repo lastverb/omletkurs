@@ -56,7 +56,7 @@ void WFQ::handleMessage(cMessage *msg) {
             computeWeights(c);
 
             queues[actualQueue].erase(queues[actualQueue].begin());
-            send(p, "out");
+            send(p, "out$o");
             scheduleAt(simTime() + time, processEvent);
         }else{
 

@@ -56,7 +56,7 @@ void FQ::handleMessage(cMessage *msg) {
             computeParameters(c);
 
             queues[actualQueue].erase(queues[actualQueue].begin());
-            send(p,"out");
+            send(p,"out$o");
             scheduleAt(simTime() + time, processEvent);
         }else{
             scheduleAt(simTime() + 0.1, processEvent);

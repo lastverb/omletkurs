@@ -8,7 +8,7 @@ simple OmNomNom
         @display("i=block/routing");
         @statistic[waitTime](title="Wait Time"; source="packet"; record=vector,stats; interpolationmode=none);
     gates:
-        input in[];
+        inout in[];
 }
 
 simple RoundRobin2
@@ -19,7 +19,7 @@ simple RoundRobin2
         @display("i=block/routing");
     gates:
         inout in[];
-        output out;
+        inout out;
 }
 
 simple WRoundRobin
@@ -30,7 +30,7 @@ simple WRoundRobin
         @display("i=block/routing");
     gates:
         inout in[];
-        output out;
+        inout out;
 }
 
 simple WFQ
@@ -41,7 +41,7 @@ simple WFQ
         @display("i=block/routing");
     gates:
         inout in[];
-        output out;
+        inout out;
 }
 
 simple FQ
@@ -52,7 +52,7 @@ simple FQ
         @display("i=block/routing");
     gates:
         inout in[];
-        output out;
+        inout out;
 }
 
 simple BaseGenerator
@@ -116,7 +116,7 @@ simple AdmissionControlModule
         int maxQueueSize = default(200);
     gates:
         inout inGates[];
-        output rejectGate;
+        inout rejectGate;
         inout outGate;
 }
 
@@ -160,7 +160,7 @@ simple LeakyBucket
     gates:
         inout in;
         inout out;
-        output rejectGate;
+        inout rejectGate;
 }
 
 simple TokenBucket
@@ -174,28 +174,22 @@ simple TokenBucket
     gates:
         inout in;
         inout out;
-        output rejectGate;
+        inout rejectGate;
 }
 
 
-//network laborki1_1
-//{
-//    types:
-//        channel Channel extends ned.DelayChannel
-//        {
-//            delay = 100ms;
-//        }
-//    submodules:
-//        omNomNom1: OmNomNom {
-//            parameters:
-//                @display("i=,gold");
-//        }
-//        poisson1: Poisson;
-//    connections:
-//        poisson1.out++ --> Channel --> omNomNom1.in;
-//}
-//
-//network laborki1_2
+network generator_poisson
+{
+    types:
+        channel NoDelay extends ned.IdealChannel{}
+    submodules:
+        omNomNom1: OmNomNom;
+        poisson1: Poisson;
+    connections:
+        poisson1.out <--> NoDelay <--> omNomNom1.in++;
+}
+
+//network generator_poisson
 //{
 //    types:
 //        channel Channel extends ned.DelayChannel
@@ -523,9 +517,7 @@ network laborki_test1
         {
             delay = 100ms;
         }
-        channel NoDelay extends ned.IdealChannel
-        {
-        }
+        channel NoDelay extends ned.IdealChannel{}
     submodules:
         generator1: Poisson;
         adm1: TailDrop;
@@ -537,9 +529,9 @@ network laborki_test1
         generator1.out <--> Channel <--> adm1.inGates++;
         adm1.outGate <--> NoDelay <--> bucket1.in;
         bucket1.out <--> NoDelay <--> scheduler1.in++;
-        adm1.rejectGate --> NoDelay --> rejecter.in++;
-        bucket1.rejectGate --> NoDelay --> rejecter.in++;
-        scheduler1.out --> NoDelay --> timer.in++;
+        adm1.rejectGate <--> NoDelay <--> rejecter.in++;
+        bucket1.rejectGate <--> NoDelay <--> rejecter.in++;
+        scheduler1.out <--> NoDelay <--> timer.in++;
 }
 
 network laborki_test2
@@ -549,9 +541,7 @@ network laborki_test2
         {
             delay = 100ms;
         }
-        channel NoDelay extends ned.IdealChannel
-        {
-        }
+        channel NoDelay extends ned.IdealChannel{}
     submodules:
         generator1: Poisson;
         adm1: TailDrop;
@@ -563,7 +553,7 @@ network laborki_test2
         generator1.out <--> Channel <--> adm1.inGates++;
         adm1.outGate <--> NoDelay <--> bucket1.in;
         bucket1.out <--> NoDelay <--> scheduler1.in++;
-        adm1.rejectGate --> NoDelay --> rejecter.in++;
-        bucket1.rejectGate --> NoDelay --> rejecter.in++;
-        scheduler1.out --> NoDelay --> timer.in++;
+        adm1.rejectGate <--> NoDelay <--> rejecter.in++;
+        bucket1.rejectGate <--> NoDelay <--> rejecter.in++;
+        scheduler1.out <--> NoDelay <--> timer.in++;
 }
