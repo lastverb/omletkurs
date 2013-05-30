@@ -16,10 +16,12 @@ simple RoundRobin2
     parameters:
         double timeConstant = default(0.8);
         int ilGeneratorow = default(3);
+        int maxQueueSize = default(200);
         @display("i=block/routing");
     gates:
         inout in[];
         inout out;
+        inout rejectGate;
 }
 
 simple WRoundRobin
@@ -27,10 +29,12 @@ simple WRoundRobin
     parameters:
         double timeConstant = default(0.8);
         int ilGeneratorow = default(3);
+        int maxQueueSize = default(200);
         @display("i=block/routing");
     gates:
         inout in[];
         inout out;
+        inout rejectGate;
 }
 
 simple WFQ
@@ -38,10 +42,12 @@ simple WFQ
     parameters:
         double timeConstant = default(0.8);
         int ilGeneratorow = default(3);
+        int maxQueueSize = default(200);
         @display("i=block/routing");
     gates:
         inout in[];
         inout out;
+        inout rejectGate;
 }
 
 simple FQ
@@ -49,10 +55,12 @@ simple FQ
     parameters:
         double timeConstant = default(0.8);
         int ilGeneratorow = default(3);
+        int maxQueueSize = default(200);
         @display("i=block/routing");
     gates:
         inout in[];
         inout out;
+        inout rejectGate;
 }
 
 simple BaseGenerator
@@ -388,115 +396,85 @@ network profile_token2
         bucket2.rejectGate <--> NoDelay <--> rejecter.in++;
 }
 
-//network laborki2_RR2
-//{
-//    types:
-//        channel Channel extends ned.DelayChannel {
-//            delay = 100ms;
-//        }
-//    submodules:
-//        rr: RoundRobin2 {
-//            parameters:
-//                @display("i=,gold");
-//        }
-//        wykladniczy[3]: Wykladniczy{
-//            
-//        }
-//        
-//    connections:
-//      wykladniczy[0].out++ --> Channel --> rr.in++;
-//      wykladniczy[1].out++ --> Channel --> rr.in++;
-//      wykladniczy[2].out++ --> Channel --> rr.in++;
-//
-//}
-//
-//network laborki2_WRR
-//{
-//    types:
-//        channel Channel extends ned.DelayChannel {
-//            delay = 100ms;
-//        }
-//    submodules:
-//        wrr: WRoundRobin {
-//            parameters:
-//                @display("i=,gold");
-//        }
-//        wykladniczy[3]: Wykladniczy{
-//            
-//        }
-//        
-//    connections:
-//      wykladniczy[0].out++ --> Channel --> wrr.in++;
-//      wykladniczy[1].out++ --> Channel --> wrr.in++;
-//      wykladniczy[2].out++ --> Channel --> wrr.in++;
-//
-//}
-//
-//network laborki2_WFQ
-//{
-//    types:
-//        channel Channel extends ned.DelayChannel {
-//            delay = 100ms;
-//        }
-//    submodules:
-//        wfq: WFQ {
-//            parameters:
-//                @display("i=,gold");
-//        }
-//        wykladniczy[3]: Wykladniczy{
-//            
-//        }
-//        
-//    connections:
-//      wykladniczy[0].out++ --> Channel --> wfq.in++;
-//      wykladniczy[1].out++ --> Channel --> wfq.in++;
-//      wykladniczy[2].out++ --> Channel --> wfq.in++;
-//
-//}
-//
-//network laborki2_FQ
-//{
-//    types:
-//        channel Channel extends ned.DelayChannel {
-//            delay = 100ms;
-//        }
-//    submodules:
-//        fq: FQ {
-//            parameters:
-//                @display("i=,gold");
-//        }
-//        wykladniczy[3]: Wykladniczy{
-//            
-//        }
-//        
-//    connections:
-//      wykladniczy[0].out++ --> Channel --> fq.in++;
-//      wykladniczy[1].out++ --> Channel --> fq.in++;
-//      wykladniczy[2].out++ --> Channel --> fq.in++;
-//
-//}
-//testowy
-//network laborki2_FQ
-//{
-//    types:
-//        channel Channel extends ned.DelayChannel {
-//            delay = 100ms;
-//        }
-//    submodules:
-//        fq: FQ {
-//            parameters:
-//                @display("i=,gold");
-//        }
-//        adm1[3]: RED;
-//        
-//        
-//    connections:
-//      adm1[0].outGates++ <--> Channel <--> fq.in++;
-//      adm1[1].outGates++ <--> Channel <--> fq.in++;
-//      adm1[2].outGates++ <--> Channel <--> fq.in++;
-//
-//}
+network scheduler_RR
+{
+    types:
+        channel Channel extends ned.DelayChannel {
+            delay = 100ms;
+        }
+        channel NoDelay extends ned.IdealChannel{}
+    submodules:
+        scheduler1: RoundRobin2;
+        generator[3]: Poisson;
+        timer: OmNomNom;
+        rejecter: OmNomNom;
+    connections:
+      generator[0].out <--> Channel <--> scheduler1.in++;
+      generator[1].out <--> Channel <--> scheduler1.in++;
+      generator[2].out <--> Channel <--> scheduler1.in++;
+      scheduler1.out <--> NoDelay <--> timer.in++;
+      scheduler1.rejectGate <--> NoDelay <--> rejecter.in++;
+}
 
+network scheduler_WRR
+{
+    types:
+        channel Channel extends ned.DelayChannel {
+            delay = 100ms;
+        }
+        channel NoDelay extends ned.IdealChannel{}
+    submodules:
+        scheduler1: WRoundRobin;
+        generator[3]: Poisson;
+        timer: OmNomNom;
+        rejecter: OmNomNom;
+    connections:
+      generator[0].out <--> Channel <--> scheduler1.in++;
+      generator[1].out <--> Channel <--> scheduler1.in++;
+      generator[2].out <--> Channel <--> scheduler1.in++;
+      scheduler1.out <--> NoDelay <--> timer.in++;
+      scheduler1.rejectGate <--> NoDelay <--> rejecter.in++;
+}
+
+network scheduler_FQ
+{
+    types:
+        channel Channel extends ned.DelayChannel {
+            delay = 100ms;
+        }
+        channel NoDelay extends ned.IdealChannel{}
+    submodules:
+        scheduler1: FQ;
+        generator[3]: Poisson;
+        timer: OmNomNom;
+        rejecter: OmNomNom;
+    connections:
+      generator[0].out <--> Channel <--> scheduler1.in++;
+      generator[1].out <--> Channel <--> scheduler1.in++;
+      generator[2].out <--> Channel <--> scheduler1.in++;
+      scheduler1.out <--> NoDelay <--> timer.in++;
+      scheduler1.rejectGate <--> NoDelay <--> rejecter.in++;
+}
+
+network scheduler_WFQ
+{
+    types:
+        channel Channel extends ned.DelayChannel {
+            delay = 100ms;
+        }
+        channel NoDelay extends ned.IdealChannel{}
+    submodules:
+        scheduler1: WFQ;
+        generator[3]: Poisson;
+        timer: OmNomNom;
+        rejecter: OmNomNom;
+    connections:
+      generator[0].out <--> Channel <--> scheduler1.in++;
+      generator[1].out <--> Channel <--> scheduler1.in++;
+      generator[2].out <--> Channel <--> scheduler1.in++;
+      scheduler1.out <--> NoDelay <--> timer.in++;
+      scheduler1.rejectGate <--> NoDelay <--> rejecter.in++;
+}
 
 network laborki_test1
 {
@@ -508,6 +486,8 @@ network laborki_test1
         channel NoDelay extends ned.IdealChannel{}
     submodules:
         generator1: Poisson;
+        generator2: Poisson;
+        generator3: Poisson;
         adm1: TailDrop;
         bucket1: LeakyBucket;
         scheduler1: RoundRobin2;
@@ -515,10 +495,13 @@ network laborki_test1
         timer: OmNomNom;
     connections:
         generator1.out <--> Channel <--> adm1.inGates++;
+        generator2.out <--> Channel <--> adm1.inGates++;
+        generator3.out <--> Channel <--> adm1.inGates++;
         adm1.outGate <--> NoDelay <--> bucket1.in;
         bucket1.out <--> NoDelay <--> scheduler1.in++;
         adm1.rejectGate <--> NoDelay <--> rejecter.in++;
         bucket1.rejectGate <--> NoDelay <--> rejecter.in++;
+        scheduler1.rejectGate <--> NoDelay <--> rejecter.in++;
         scheduler1.out <--> NoDelay <--> timer.in++;
 }
 
@@ -532,16 +515,21 @@ network laborki_test2
         channel NoDelay extends ned.IdealChannel{}
     submodules:
         generator1: Poisson;
-        adm1: TailDrop;
+        generator2: Poisson;
+        generator3: Poisson;
+        adm1: FrontDrop;
         bucket1: TokenBucket;
-        scheduler1: RoundRobin2;
+        scheduler1: FQ;
         rejecter: OmNomNom;
         timer: OmNomNom;
     connections:
         generator1.out <--> Channel <--> adm1.inGates++;
+        generator2.out <--> Channel <--> adm1.inGates++;
+        generator3.out <--> Channel <--> adm1.inGates++;
         adm1.outGate <--> NoDelay <--> bucket1.in;
         bucket1.out <--> NoDelay <--> scheduler1.in++;
         adm1.rejectGate <--> NoDelay <--> rejecter.in++;
         bucket1.rejectGate <--> NoDelay <--> rejecter.in++;
+        scheduler1.rejectGate <--> NoDelay <--> rejecter.in++;
         scheduler1.out <--> NoDelay <--> timer.in++;
 }

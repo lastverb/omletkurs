@@ -33,6 +33,8 @@ private:
     vector <double> schedule;
     vector <double> multipliers;
     vector < vector <Packet*> > queues;
+    vector < unsigned int> queueSize;
+    unsigned int maxQueueSize;
 
 public:
     WFQ();

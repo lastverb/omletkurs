@@ -27,7 +27,6 @@ WFQ::~WFQ() {
 
 void WFQ::initialize() {
     processEvent = new cMessage("process");
-
     lastServedQueue = 0;
     actualQueue=0;
     timeConstant = double(par("timeConstant"));
@@ -37,6 +36,12 @@ void WFQ::initialize() {
     multipliers.resize(n);
     generateWeights();
 
+    maxQueueSize = par("maxQueueSize");
+    queueSize.resize(n);
+    for(int i=0;i<queueSize.size();i++){
+        queueSize[i]=0;
+    }
+
     scheduleAt(simTime() + 1, processEvent);
 }
 
@@ -44,7 +49,12 @@ void WFQ::handleMessage(cMessage *msg) {
 
     if(msg!=processEvent){
         Packet *packet = check_and_cast<Packet *>(msg);
-        queues[packet->getSrc()].push_back(packet);
+        if(queueSize[packet->getSrc()] + packet->getPayloadArraySize() > maxQueueSize){
+            send(packet,"rejectGate$o");
+        }else{
+            queues[packet->getSrc()].push_back(packet);
+            queueSize[packet->getSrc()] += packet->getPayloadArraySize();
+        }
     }else{
         actualQueue=chooseQueue();
         if(queues[actualQueue].size()>0){
@@ -56,6 +66,7 @@ void WFQ::handleMessage(cMessage *msg) {
             computeWeights(c);
 
             queues[actualQueue].erase(queues[actualQueue].begin());
+            queueSize[actualQueue] -= p->getPayloadArraySize();
             send(p, "out$o");
             scheduleAt(simTime() + time, processEvent);
         }else{

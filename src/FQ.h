@@ -32,6 +32,8 @@ private:
     int actualQueue;
     vector <double> schedule;
     vector < vector <Packet*> > queues;
+    vector < unsigned int> queueSize;
+    unsigned int maxQueueSize;
 
 public:
     FQ();
