@@ -58,7 +58,7 @@ void WFQ::handleMessage(cMessage *msg) {
     }else{
         actualQueue=chooseQueue();
         if(queues[actualQueue].size()>0){
-            Packet *p = queues[lastServedQueue].front();
+            Packet *p = queues[actualQueue].front();
             double time=(double(p->getPayloadArraySize())*timeConstant);
 
             schedule[actualQueue]+=double(p->getPayloadArraySize());

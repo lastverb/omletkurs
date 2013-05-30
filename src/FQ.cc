@@ -27,7 +27,6 @@ FQ::~FQ() {
 
 void FQ::initialize() {
     processEvent = new cMessage("process");
-
     lastServedQueue = 0;
     actualQueue=0;
     timeConstant = double(par("timeConstant"));
@@ -57,10 +56,10 @@ void FQ::handleMessage(cMessage *msg) {
             queueSize[packet->getSrc()] += packet->getPayloadArraySize();
         }
     }else{
-        actualQueue=chooseQueue();
+        actualQueue = chooseQueue();
         if(queues[actualQueue].size()>0){
-            Packet *p = queues[lastServedQueue].front();
-            double time=(double(p->getPayloadArraySize())*timeConstant);
+            Packet *p = queues[actualQueue].at(0);
+            double time=ceil((double(p->getPayloadArraySize())*timeConstant)*10)/10;
 
             schedule[actualQueue]+=double(p->getPayloadArraySize());
             double c=schedule[chooseQueue()];
@@ -68,8 +67,8 @@ void FQ::handleMessage(cMessage *msg) {
 
             queues[actualQueue].erase(queues[actualQueue].begin());
             queueSize[actualQueue] -= p->getPayloadArraySize();
-            send(p,"out$o");
             scheduleAt(simTime() + time, processEvent);
+            send(p,"out$o");
         }else{
             scheduleAt(simTime() + 0.1, processEvent);
         }
@@ -83,7 +82,6 @@ void FQ::computeParameters(double value){
         if(schedule[i]<0.0){
             schedule[i]=0.0;
         }
-//        EV << "computeWeights "<< schedule[i];
     }
 
 }

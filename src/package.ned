@@ -70,7 +70,6 @@ simple BaseGenerator
         int packetLengthMax = default(20);
         double sessionLength = default(10.0);        
         int packetPriority = default(3);
-        double quantumLength = default(10.0);
         @statistic[timeChange](title="Wait Time"; source="send"; record=vector,stats; interpolationmode=none);
         @display("i=block/routing");
     gates:
