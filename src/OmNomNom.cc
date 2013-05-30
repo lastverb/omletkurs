@@ -24,11 +24,17 @@ OmNomNom::~OmNomNom() {
 }
 
 void OmNomNom::initialize() {
-
+    messageSignal = registerSignal("packet");
 }
 
 void OmNomNom::handleMessage(cMessage *msg) {
-    //DO OMNOMNOM
-    delete msg;
+    Packet *p = check_and_cast<Packet *>(msg);
+    registerPacket(p);
+    delete p;
+}
+
+void OmNomNom::registerPacket(Packet *p)
+{
+    emit(messageSignal, simTime() - p->getTime());
 }
 

@@ -41,6 +41,7 @@ void BaseGenerator::initializeBonus() {
 }
 
 void BaseGenerator::handleMessage(cMessage *msg) {
+    if(strcmp(msg->getName(),"jobDone") == 0) return;
     Packet *packet = generatePacket();
     sendPacket(packet);
 
@@ -65,7 +66,6 @@ Packet *BaseGenerator::generatePacket(){
     packet->setDst(dest);
     packet->setPacketId(id);
     packet->setPriorityClass(int(par("packetPriority")));
-    packet->setTime(double(intuniform(1,20)));
 
     int length = intuniform(int(par("packetLengthMin")), int(par("packetLengthMax")));
     packet->setPayloadArraySize(length);
@@ -82,10 +82,7 @@ Packet *BaseGenerator::generatePacket(){
 }
 
 void BaseGenerator::sendPacket(Packet *packet){
-    int n = gateSize("out");
-    int k = intuniform(0, n-1);
-
-    send(packet, "out", k);
+    send(packet, "out$o");
 }
 
 simtime_t BaseGenerator::getTimeChange(){

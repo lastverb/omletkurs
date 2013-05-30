@@ -42,7 +42,7 @@ void FrontDrop::reject(Packet *p)
     {
         Packet *t = q.front();
         q.erase(q.begin());
-        delete t;
+        send(t,"rejectGate");
     }
     accept(p);
 }

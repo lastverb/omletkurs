@@ -36,11 +36,12 @@ public:
     AdmissionControlModule();
     virtual ~AdmissionControlModule();
     virtual void initialize();
-    virtual void handleMessage(cMessage *msg);
+    void handleMessage(cMessage *msg);
     virtual void newIncomePacket(Packet *p);
     virtual void accept(Packet *p);
     virtual void reject(Packet *p);
     void checkAndSend();
+    void setWaitingStartTime(Packet *p);
 };
 
 Define_Module(AdmissionControlModule);

@@ -161,12 +161,12 @@ void Packet::setPriorityClass(int priorityClass)
     this->priorityClass_var = priorityClass;
 }
 
-double Packet::getTime() const
+simtime_t Packet::getTime() const
 {
     return time_var;
 }
 
-void Packet::setTime(double time)
+void Packet::setTime(simtime_t time)
 {
     this->time_var = time;
 }
@@ -319,7 +319,7 @@ const char *PacketDescriptor::getFieldTypeString(void *object, int field) const
         "int",
         "int",
         "int",
-        "double",
+        "simtime_t",
         "unsigned char",
     };
     return (field>=0 && field<7) ? fieldTypeStrings[field] : NULL;

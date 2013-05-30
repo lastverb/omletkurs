@@ -19,6 +19,6 @@ packet Packet {
     int sessionId;
     int packetId;
     int priorityClass;
-    double time;
+    simtime_t time;
     unsigned char payload[];
 }

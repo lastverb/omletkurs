@@ -65,7 +65,7 @@ void TokenBucket::handleMessage(cMessage *msg) {
         scheduleAt(simTime(), sendMsg);
     } else {
         if (queue.getLength() > queueSize) {
-            delete msg;
+            send(msg,"rejectGate");
             return;
         }
 

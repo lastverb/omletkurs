@@ -17,13 +17,18 @@
 #define OMNOMNOM_H_
 
 #include <omnetpp.h>
+#include "packet_m.h"
 
 class OmNomNom: public cSimpleModule {
+private:
+    simsignal_t messageSignal;
+
 public:
     OmNomNom();
     virtual ~OmNomNom();
     virtual void initialize();
     virtual void handleMessage(cMessage *msg);
+    void registerPacket(Packet *p);
 };
 
 Define_Module(OmNomNom);

@@ -7,7 +7,7 @@ simple OmNomNom
     parameters:
         @display("i=block/routing");
     gates:
-        input in;
+        input in[];
 }
 
 simple RoundRobin2
@@ -61,7 +61,7 @@ simple BaseGenerator
         @statistic[timeChange](title="Wait Time"; source="send"; record=vector,stats; interpolationmode=none);
         @display("i=block/routing");
     gates:
-        output out[];
+        inout out;
 }
 
 simple Poisson extends BaseGenerator
@@ -109,7 +109,8 @@ simple AdmissionControlModule
     parameters:
         int maxQueueSize = default(200);
     gates:
-        input inGates[];
+        inout inGates[];
+        output rejectGate;
         inout outGate;
 }
 
@@ -153,6 +154,7 @@ simple LeakyBucket
     gates:
         inout in;
         inout out;
+        output rejectGate;
 }
 
 simple TokenBucket
@@ -166,6 +168,7 @@ simple TokenBucket
     gates:
         inout in;
         inout out;
+        output rejectGate;
 }
 
 
@@ -522,10 +525,13 @@ network laborki_test1
         adm1: TailDrop;
         bucket1: LeakyBucket;
         scheduler1: RoundRobin2;
+        rejecter: OmNomNom;
     connections:
-        generator1.out++ --> Channel --> adm1.inGates++;
+        generator1.out <--> Channel <--> adm1.inGates++;
         adm1.outGate <--> NoDelay <--> bucket1.in;
         bucket1.out <--> NoDelay <--> scheduler1.in++;
+        adm1.rejectGate --> NoDelay --> rejecter.in++;
+        bucket1.rejectGate --> NoDelay --> rejecter.in++;
 }
 
 network laborki_test2
@@ -543,8 +549,11 @@ network laborki_test2
         adm1: TailDrop;
         bucket1: TokenBucket;
         scheduler1: RoundRobin2;
+        rejecter: OmNomNom;
     connections:
-        generator1.out++ --> Channel --> adm1.inGates++;
+        generator1.out <--> Channel <--> adm1.inGates++;
         adm1.outGate <--> NoDelay <--> bucket1.in;
         bucket1.out <--> NoDelay <--> scheduler1.in++;
+        adm1.rejectGate --> NoDelay --> rejecter.in++;
+        bucket1.rejectGate --> NoDelay --> rejecter.in++;
 }

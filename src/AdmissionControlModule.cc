@@ -42,6 +42,7 @@ void AdmissionControlModule::handleMessage(cMessage *msg)
     else
     {
         Packet *p = check_and_cast<Packet *>(msg);
+        setWaitingStartTime(p);
         newIncomePacket(p);
         checkAndSend();
     }
@@ -60,7 +61,7 @@ void AdmissionControlModule::accept(Packet *p)
 
 void AdmissionControlModule::reject(Packet *p)
 {
-    delete p;
+    send(p,"rejectGate");
 }
 
 void AdmissionControlModule::checkAndSend()
@@ -70,4 +71,9 @@ void AdmissionControlModule::checkAndSend()
     send(q.front(),"outGate$o");
     queueSize -= q.front()->getPayloadArraySize();
     q.erase(q.begin());
+}
+
+void AdmissionControlModule::setWaitingStartTime(Packet *p)
+{
+    p->setTime(simTime());
 }
