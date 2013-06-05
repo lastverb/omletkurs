@@ -35,6 +35,7 @@ private:
     vector < vector <Packet*> > queues;
     vector < unsigned int> queueSize;
     unsigned int maxQueueSize;
+    bool empty;
 
 public:
     WFQ();

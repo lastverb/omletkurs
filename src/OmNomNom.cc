@@ -25,6 +25,12 @@ OmNomNom::~OmNomNom() {
 
 void OmNomNom::initialize() {
     messageSignal = registerSignal("packet");
+    classAware = par("classAware");
+    if(classAware){
+        messageSignal0 = registerSignal("packet0");
+        messageSignal1 = registerSignal("packet1");
+        messageSignal2 = registerSignal("packet2");
+    }
 }
 
 void OmNomNom::handleMessage(cMessage *msg) {
@@ -36,5 +42,20 @@ void OmNomNom::handleMessage(cMessage *msg) {
 void OmNomNom::registerPacket(Packet *p)
 {
     emit(messageSignal, simTime() - p->getTime());
+    if(classAware){
+        switch(p->getPriorityClass()){
+        case 0:
+            emit(messageSignal0, simTime() - p->getTime());
+            break;
+        case 1:
+            emit(messageSignal1, simTime() - p->getTime());
+            break;
+        case 2:
+            emit(messageSignal2, simTime() - p->getTime());
+            break;
+        default:
+            break;
+        }
+    }
 }
 

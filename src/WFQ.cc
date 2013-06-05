@@ -42,24 +42,28 @@ void WFQ::initialize() {
         queueSize[i]=0;
     }
 
-    scheduleAt(simTime() + 1, processEvent);
+    empty = true;
 }
 
 void WFQ::handleMessage(cMessage *msg) {
 
     if(msg!=processEvent){
         Packet *packet = check_and_cast<Packet *>(msg);
-        if(queueSize[packet->getSrc()] + packet->getPayloadArraySize() > maxQueueSize){
+        if(queueSize[packet->getPriorityClass()] + packet->getPayloadArraySize() > maxQueueSize){
             send(packet,"rejectGate$o");
         }else{
-            queues[packet->getSrc()].push_back(packet);
-            queueSize[packet->getSrc()] += packet->getPayloadArraySize();
+            queues[packet->getPriorityClass()].push_back(packet);
+            queueSize[packet->getPriorityClass()] += packet->getPayloadArraySize();
+            if(empty){
+                empty = false;
+                scheduleAt(simTime(), processEvent);
+            }
         }
     }else{
         actualQueue=chooseQueue();
         if(queues[actualQueue].size()>0){
             Packet *p = queues[actualQueue].front();
-            double time=(double(p->getPayloadArraySize())*timeConstant);
+            double time=double(p->getPayloadArraySize())*timeConstant;
 
             schedule[actualQueue]+=double(p->getPayloadArraySize());
             double c=schedule[chooseQueue()];
@@ -70,8 +74,7 @@ void WFQ::handleMessage(cMessage *msg) {
             send(p, "out$o");
             scheduleAt(simTime() + time, processEvent);
         }else{
-
-            scheduleAt(simTime() + 0.1, processEvent);
+            empty = true;
         }
 
     }

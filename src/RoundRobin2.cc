@@ -38,22 +38,26 @@ void RoundRobin2::initialize() {
         queueSize[i]=0;
     }
 
-    scheduleAt(simTime() + 1, processEvent);
+    empty = true;
 }
 
 void RoundRobin2::handleMessage(cMessage *msg) {
     if(msg!=processEvent){
         Packet *packet = check_and_cast<Packet *>(msg);
-        if(queueSize[packet->getSrc()] + packet->getPayloadArraySize() > maxQueueSize){
+        if(queueSize[packet->getPriorityClass()] + packet->getPayloadArraySize() > maxQueueSize){
             send(packet,"rejectGate$o");
         }else{
-            queues[packet->getSrc()].push_back(packet);
-            queueSize[packet->getSrc()] += packet->getPayloadArraySize();
+            queues[packet->getPriorityClass()].push_back(packet);
+            queueSize[packet->getPriorityClass()] += packet->getPayloadArraySize();
+            if(empty){
+                empty = false;
+                scheduleAt(simTime(), processEvent);
+            }
         }
     }else{
         if(queues[lastServedQueue].size()>0){
             Packet *p = queues[lastServedQueue].front();
-            double time=(double(p->getPayloadArraySize())*timeConstant);
+            double time=double(p->getPayloadArraySize())*timeConstant;
 
             queues[lastServedQueue].erase(queues[lastServedQueue].begin());
             queueSize[lastServedQueue] -= p->getPayloadArraySize();
@@ -64,12 +68,14 @@ void RoundRobin2::handleMessage(cMessage *msg) {
                 lastServedQueue=0;
             }
             scheduleAt(simTime() + time, processEvent);
+        }else if(emptyQueues()){
+            empty = true;
         }else{
             lastServedQueue++;
             if(lastServedQueue>=queues.size()){
                 lastServedQueue=0;
             }
-            scheduleAt(simTime() + 0.1, processEvent);
+            scheduleAt(simTime(), processEvent);
         }
 
     }
@@ -81,4 +87,15 @@ void RoundRobin2::computeWeights(){
         schedule[i]=intuniform(1, schedule.size()*2);
     }
 
+}
+
+bool RoundRobin2::emptyQueues(){
+    bool t = true;
+    for(int i=0; i<queues.size(); ++i){
+        if(queues[i].size() > 0){
+            t = false;
+            break;
+        }
+    }
+    return t;
 }
