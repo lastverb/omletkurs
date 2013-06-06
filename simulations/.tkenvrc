@@ -1,6 +1,4 @@
 # Partial Tkenv config file -- see $HOME/.tkenvrc as well
-inspector "profile_leaky" "profile_leaky" "2" "565x341+50+50:normal"
-inspector "ac_FrontDrop" "ac_FrontDrop" "2" "565x341+75+75:normal"
 inspector "laborki_test2" "laborki_test2" "2" "565x341+175+175:normal"
 inspector "generator_onoff" "generator_onoff" "2" "565x341+55+136:normal"
 inspector "ac_RED" "ac_RED" "2" "565x341+150+150:normal"

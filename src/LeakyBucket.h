@@ -26,7 +26,7 @@ class LeakyBucket : public cSimpleModule
 protected:
     cMessage *handleOver;
     cQueue queue;
-    int delay;
+    double delay;
     int queueSize;
 
 public:

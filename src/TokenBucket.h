@@ -27,7 +27,7 @@ class TokenBucket: public cSimpleModule {
     cMessage *fillTokens;
     cMessage *sendMsg;
     cQueue queue;
-    int delay;
+    double delay;
     int queueSize;
     int tokensCount;
     int tokensMax;
