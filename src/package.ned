@@ -167,7 +167,7 @@ simple LeakyBucket
     parameters:
         @class(LeakyBucket);
         int queueSize = default(200);
-        int delay = default(0.5);
+        double delay = default(0.5);
 
     gates:
         inout in;
@@ -180,7 +180,7 @@ simple TokenBucket
     parameters:
         @class(TokenBucket);
         int queueSize = default(200);
-        int delay = default(10);
+        double delay = default(10);
         int tokensMax = default(2);
 
     gates:
