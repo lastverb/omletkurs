@@ -85,6 +85,7 @@ void WFQ::generateWeights(){
     for(int i=0;i<schedule.size();i++){
         schedule[i]=0.0;
         multipliers[i]=double(intuniform(1, schedule.size()*2))/double(schedule.size()*2);
+        EV << "waga "<< multipliers[i];
     }
 
 }
