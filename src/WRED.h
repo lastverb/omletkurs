@@ -22,6 +22,7 @@ class WRED: public AdmissionControlModule {
 private:
     unsigned int* minT;
     double* multiplier;
+    int classes;
 
 public:
     WRED();

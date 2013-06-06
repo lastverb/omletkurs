@@ -21,7 +21,6 @@ AdmissionControlModule::AdmissionControlModule() {
 }
 
 AdmissionControlModule::~AdmissionControlModule() {
-    // TODO Auto-generated destructor stub
 }
 
 void AdmissionControlModule::initialize()

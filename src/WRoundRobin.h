@@ -35,6 +35,8 @@ private:
     vector < vector <Packet*> > queues;
     vector < unsigned int> queueSize;
     unsigned int maxQueueSize;
+    bool empty;
+    bool emptyQueues();
 
 public:
     WRoundRobin();

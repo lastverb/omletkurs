@@ -22,6 +22,10 @@
 class OmNomNom: public cSimpleModule {
 private:
     simsignal_t messageSignal;
+    simsignal_t messageSignal0;
+    simsignal_t messageSignal1;
+    simsignal_t messageSignal2;
+    bool classAware;
 
 public:
     OmNomNom();

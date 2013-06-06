@@ -14,7 +14,6 @@
 // 
 
 #include "WRED.h"
-#define CLASSES 5
 
 WRED::WRED() {
     // TODO Auto-generated constructor stub
@@ -28,17 +27,19 @@ WRED::~WRED() {
 void WRED::initialize()
 {
     AdmissionControlModule::initialize();
-    minT = new unsigned int[CLASSES];
-    multiplier = new double[CLASSES];
+    classes = par("classes");
+    minT = new unsigned int[classes];
+    multiplier = new double[classes];
     int minTmin = par("minTmin");
     int minTmax = par("minTmax");
     double mulMin = double(par("multiplierMin"));
     double mulMax = double(par("multiplierMax"));
 
-    for(int i=0; i<CLASSES; ++i)
+    for(int i=0; i<classes; ++i)
     {
         minT[i] = intuniform(minTmin, minTmax);
         multiplier[i] = mulMin + dblrand() * (mulMax - mulMin);
+        EV << "WRED - klasa " << i << ": minT=" << minT[i] << " multiplier=" << multiplier[i] << "\n";
     }
 }
 
@@ -46,7 +47,7 @@ void WRED::newIncomePacket(Packet *p)
 {
     unsigned int sizeT = queueSize + p->getPayloadArraySize();
     int c = p->getPriorityClass();
-    if(c > CLASSES)
+    if(c > classes)
         c = 0;
 
     if(sizeT > maxQueueSize)
@@ -55,7 +56,7 @@ void WRED::newIncomePacket(Packet *p)
     }
     else if(sizeT > minT[c])
     {
-        double k = multiplier[c] * (sizeT - minT[c])/double((maxQueueSize - minT[c]));
+        double k = multiplier[c] * (sizeT - minT[c])/double(maxQueueSize - minT[c]);
         if(intuniform(0,INT_MAX) / double(INT_MAX) > k)
             accept(p);
         else

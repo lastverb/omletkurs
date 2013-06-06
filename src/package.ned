@@ -5,8 +5,12 @@ package omletkurs;
 simple OmNomNom
 {
     parameters:
+        bool classAware = default(false);
         @display("i=block/routing");
         @statistic[waitTime](title="Wait Time"; source="packet"; record=vector,stats; interpolationmode=none);
+        @statistic[waitTime0](title="Wait Time 0"; source="packet0"; record=vector,stats; interpolationmode=none);
+        @statistic[waitTime1](title="Wait Time 1"; source="packet1"; record=vector,stats; interpolationmode=none);
+        @statistic[waitTime2](title="Wait Time 2"; source="packet2"; record=vector,stats; interpolationmode=none);
     gates:
         inout in[];
 }
@@ -14,9 +18,9 @@ simple OmNomNom
 simple RoundRobin2
 {
     parameters:
-        double timeConstant = default(0.8);
+        double timeConstant = default(0.02);
         int ilGeneratorow = default(3);
-        int maxQueueSize = default(200);
+        int maxQueueSize = default(300);
         @display("i=block/routing");
     gates:
         inout in[];
@@ -27,9 +31,9 @@ simple RoundRobin2
 simple WRoundRobin
 {
     parameters:
-        double timeConstant = default(0.8);
+        double timeConstant = default(0.02);
         int ilGeneratorow = default(3);
-        int maxQueueSize = default(200);
+        int maxQueueSize = default(300);
         @display("i=block/routing");
     gates:
         inout in[];
@@ -40,9 +44,9 @@ simple WRoundRobin
 simple WFQ
 {
     parameters:
-        double timeConstant = default(0.8);
+        double timeConstant = default(0.02);
         int ilGeneratorow = default(3);
-        int maxQueueSize = default(200);
+        int maxQueueSize = default(300);
         @display("i=block/routing");
     gates:
         inout in[];
@@ -53,9 +57,9 @@ simple WFQ
 simple FQ
 {
     parameters:
-        double timeConstant = default(0.8);
+        double timeConstant = default(0.02);
         int ilGeneratorow = default(3);
-        int maxQueueSize = default(200);
+        int maxQueueSize = default(300);
         @display("i=block/routing");
     gates:
         inout in[];
@@ -69,7 +73,7 @@ simple BaseGenerator
         int packetLengthMin = default(5);
         int packetLengthMax = default(20);
         double sessionLength = default(10.0);        
-        int packetPriority = default(3);
+        int packetPriority = default(2);
         @statistic[timeChange](title="Wait Time"; source="send"; record=vector,stats; interpolationmode=none);
         @display("i=block/routing");
     gates:
@@ -110,8 +114,8 @@ simple Worker
 {
     parameters:
         int workerId = default(0);
-        double jobTimeMin = default(1.0);
-        double jobTimePerByte = default(0.1);
+        double jobTimeMin = default(0.0);
+        double jobTimePerByte = default(0.02);
     gates:
         inout gate;
         inout out;
@@ -120,7 +124,7 @@ simple Worker
 simple AdmissionControlModule
 {
     parameters:
-        int maxQueueSize = default(200);
+        int maxQueueSize = default(300);
     gates:
         inout inGates[];
         inout rejectGate;
@@ -151,10 +155,11 @@ simple WRED extends AdmissionControlModule
 {
     parameters:
         @class(WRED);
-        int minTmin = default(50);
+        int minTmin = default(20);
         int minTmax = default(150);
-        double multiplierMin = default(0.2);
-        double multiplierMax = default(0.6);
+        double multiplierMin = default(0.4);
+        double multiplierMax = default(0.9);
+        int classes = default(3);
 }
 
 simple LeakyBucket
@@ -238,7 +243,7 @@ network ac_TailDrop
         }
         channel NoDelay extends ned.IdealChannel{}
     submodules:
-        generator1: Poisson;
+        generator1: Wykladniczy;
         adm1: TailDrop;
         worker1: Worker;
         timer: OmNomNom;
@@ -259,7 +264,7 @@ network ac_FrontDrop
         }
         channel NoDelay extends ned.IdealChannel{}
     submodules:
-        generator1: Poisson;
+        generator1: Wykladniczy;
         adm1: FrontDrop;
         worker1: Worker;
         timer: OmNomNom;
@@ -280,7 +285,7 @@ network ac_RED
         }
         channel NoDelay extends ned.IdealChannel{}
     submodules:
-        generator1: Poisson;
+        generator1: Wykladniczy;
         adm1: RED;
         worker1: Worker;
         timer: OmNomNom;
@@ -301,7 +306,7 @@ network ac_WRED
         }
         channel NoDelay extends ned.IdealChannel{}
     submodules:
-        generator1: Poisson;
+        generator1: Wykladniczy;
         adm1: WRED;
         worker1: Worker;
         timer: OmNomNom;
@@ -322,7 +327,7 @@ network profile_leaky
         }
         channel NoDelay extends ned.IdealChannel{}
     submodules:
-        generator1: Poisson;
+        generator1: Wykladniczy;
         bucket1: LeakyBucket;
         timer: OmNomNom;
         rejecter: OmNomNom;
@@ -341,7 +346,7 @@ network profile_leaky2
         }
         channel NoDelay extends ned.IdealChannel{}
     submodules:
-        generator1: Poisson;
+        generator1: Wykladniczy;
         bucket1: LeakyBucket;
         bucket2: LeakyBucket;
         timer: OmNomNom;
@@ -363,7 +368,7 @@ network profile_token
         }
         channel NoDelay extends ned.IdealChannel{}
     submodules:
-        generator1: Poisson;
+        generator1: Wykladniczy;
         bucket1: TokenBucket;
         timer: OmNomNom;
         rejecter: OmNomNom;
@@ -382,7 +387,7 @@ network profile_token2
         }
         channel NoDelay extends ned.IdealChannel{}
     submodules:
-        generator1: Poisson;
+        generator1: Wykladniczy;
         bucket1: TokenBucket;
         bucket2: TokenBucket;
         timer: OmNomNom;
@@ -404,13 +409,11 @@ network scheduler_RR
         channel NoDelay extends ned.IdealChannel{}
     submodules:
         scheduler1: RoundRobin2;
-        generator[3]: Poisson;
+        generator1: Wykladniczy;
         timer: OmNomNom;
         rejecter: OmNomNom;
     connections:
-      generator[0].out <--> Channel <--> scheduler1.in++;
-      generator[1].out <--> Channel <--> scheduler1.in++;
-      generator[2].out <--> Channel <--> scheduler1.in++;
+      generator1.out <--> Channel <--> scheduler1.in++;
       scheduler1.out <--> NoDelay <--> timer.in++;
       scheduler1.rejectGate <--> NoDelay <--> rejecter.in++;
 }
@@ -424,13 +427,11 @@ network scheduler_WRR
         channel NoDelay extends ned.IdealChannel{}
     submodules:
         scheduler1: WRoundRobin;
-        generator[3]: Poisson;
+        generator1: Wykladniczy;
         timer: OmNomNom;
         rejecter: OmNomNom;
     connections:
-      generator[0].out <--> Channel <--> scheduler1.in++;
-      generator[1].out <--> Channel <--> scheduler1.in++;
-      generator[2].out <--> Channel <--> scheduler1.in++;
+      generator1.out <--> Channel <--> scheduler1.in++;
       scheduler1.out <--> NoDelay <--> timer.in++;
       scheduler1.rejectGate <--> NoDelay <--> rejecter.in++;
 }
@@ -444,13 +445,11 @@ network scheduler_FQ
         channel NoDelay extends ned.IdealChannel{}
     submodules:
         scheduler1: FQ;
-        generator[3]: Poisson;
+        generator1: Wykladniczy;
         timer: OmNomNom;
         rejecter: OmNomNom;
     connections:
-      generator[0].out <--> Channel <--> scheduler1.in++;
-      generator[1].out <--> Channel <--> scheduler1.in++;
-      generator[2].out <--> Channel <--> scheduler1.in++;
+      generator1.out <--> Channel <--> scheduler1.in++;
       scheduler1.out <--> NoDelay <--> timer.in++;
       scheduler1.rejectGate <--> NoDelay <--> rejecter.in++;
 }
@@ -464,13 +463,11 @@ network scheduler_WFQ
         channel NoDelay extends ned.IdealChannel{}
     submodules:
         scheduler1: WFQ;
-        generator[3]: Poisson;
+        generator1: Wykladniczy;
         timer: OmNomNom;
         rejecter: OmNomNom;
     connections:
-      generator[0].out <--> Channel <--> scheduler1.in++;
-      generator[1].out <--> Channel <--> scheduler1.in++;
-      generator[2].out <--> Channel <--> scheduler1.in++;
+      generator1.out <--> Channel <--> scheduler1.in++;
       scheduler1.out <--> NoDelay <--> timer.in++;
       scheduler1.rejectGate <--> NoDelay <--> rejecter.in++;
 }
@@ -484,9 +481,7 @@ network laborki_test1
         }
         channel NoDelay extends ned.IdealChannel{}
     submodules:
-        generator1: Poisson;
-        generator2: Poisson;
-        generator3: Poisson;
+        generator1: Wykladniczy;
         adm1: TailDrop;
         bucket1: LeakyBucket;
         scheduler1: RoundRobin2;
@@ -494,8 +489,6 @@ network laborki_test1
         timer: OmNomNom;
     connections:
         generator1.out <--> Channel <--> adm1.inGates++;
-        generator2.out <--> Channel <--> adm1.inGates++;
-        generator3.out <--> Channel <--> adm1.inGates++;
         adm1.outGate <--> NoDelay <--> bucket1.in;
         bucket1.out <--> NoDelay <--> scheduler1.in++;
         adm1.rejectGate <--> NoDelay <--> rejecter.in++;
@@ -513,9 +506,7 @@ network laborki_test2
         }
         channel NoDelay extends ned.IdealChannel{}
     submodules:
-        generator1: Poisson;
-        generator2: Poisson;
-        generator3: Poisson;
+        generator1: Wykladniczy;
         adm1: FrontDrop;
         bucket1: TokenBucket;
         scheduler1: FQ;
@@ -523,8 +514,6 @@ network laborki_test2
         timer: OmNomNom;
     connections:
         generator1.out <--> Channel <--> adm1.inGates++;
-        generator2.out <--> Channel <--> adm1.inGates++;
-        generator3.out <--> Channel <--> adm1.inGates++;
         adm1.outGate <--> NoDelay <--> bucket1.in;
         bucket1.out <--> NoDelay <--> scheduler1.in++;
         adm1.rejectGate <--> NoDelay <--> rejecter.in++;
