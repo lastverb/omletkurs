@@ -8,7 +8,7 @@ inspector "scheduler_WRR" "scheduler_WRR" "2" "565x341+175+175:normal"
 inspector "laborki1" "laborki1" "2" "565x342+25+25:normal"
 inspector "ac_TailDrop" "ac_TailDrop" "2" "565x341+75+75:normal"
 inspector "scheduler_RR" "scheduler_RR" "2" "565x341+45+144:normal"
+inspector "laborki_test1" "laborki_test1" "2" "565x341+25+25:normal"
 inspector "laborki2_FQ" "laborki2_FQ" "2" "565x341+628+173:normal"
 inspector "scheduler_WFQ" "scheduler_WFQ" "2" "565x341+50+50:normal"
-inspector "laborki_test1" "laborki_test1" "2" "565x341+25+25:normal"
 
